@@ -3,149 +3,400 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Teste de localStorage</title>
+    <title>Calculadora de M²</title>
     <style>
         body {
             font-family: Arial, sans-serif;
             margin: 0;
             padding: 20px;
             background-color: #f0f0f0;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            height: 100vh;
         }
 
         .container {
-            max-width: 300px;
+            max-width: 600px; /* Largura máxima em desktops */
+            margin: 0 auto;
             background-color: #fff;
             padding: 20px;
             border-radius: 8px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .header h1 {
+            font-size: 24px;
+            margin: 0;
+        }
+
+        .medida-group {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+            padding: 5px 0;
+            flex-wrap: wrap;
+        }
+
+        .medida-group input, .medida-group select {
+            padding: 6px;
+            margin-right: 5px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 12px;
+            width: 60px;
+            box-sizing: border-box;
+            min-width: 60px; /* largura mínima */
+        }
+
+        .medida-group input[type="checkbox"], .medida-group .toggle-icon {
+            width: 30px;
+            flex-shrink: 0;
             text-align: center;
         }
 
-        input[type="number"] {
-            padding: 10px;
-            font-size: 16px;
-            width: calc(100% - 22px);
-            margin-bottom: 10px;
-            border: 1px solid #ddd;
-            border-radius: 5px;
+        .medida-group input.invalid {
+            border-color: #ff0000;
         }
 
-        button {
-            padding: 10px 20px;
-            font-size: 16px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            margin-bottom: 10px;
-            width: 100%;
+        .medida-group input.disabled, .medida-group select.disabled {
+            opacity: 0.5;
         }
 
-        .save-button {
+        .medida-group .hidden {
+            display: none;
+        }
+
+        .resultado {
+            text-align: right;
+            margin-top: 20px;
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+        .button-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+
+        .add-button, .clear-button {
             background-color: #28a745;
             color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 5px;
+            flex-grow: 1;
+            text-align: center;
         }
 
-        .save-button:hover {
+        .add-button:hover, .clear-button:hover {
             background-color: #218838;
         }
 
         .clear-button {
             background-color: #dc3545;
-            color: white;
         }
 
         .clear-button:hover {
             background-color: #c82333;
         }
+
+        .toggle-icon {
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        .additional-fields {
+            display: flex;
+            width: 100%;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            margin-top: 10px;
+        }
+
+        .additional-fields select {
+            flex: 1 1 45%;
+            margin-top: 5px;
+        }
+
+        @media (max-width: 600px) {
+            .container {
+                max-width: 100%;
+                padding: 0 10px; /* Ajuste de padding da container */
+            }
+
+            .button-container {
+                position: fixed;
+                bottom: 0;
+                left: 0;
+                width: 100%;
+                background-color: #fff;
+                padding: 10px 0;
+                box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
+                z-index: 1000;
+            }
+
+            .add-button, .clear-button {
+                width: 45%;
+                margin: 0 2.5%;
+            }
+
+            .medida-group {
+                justify-content: space-between;
+                margin: 0; /* Removendo margens ao redor do grupo */
+                padding: 0; /* Removendo padding ao redor do grupo */
+            }
+
+            .medida-group input, .medida-group select {
+                width: 45px;
+                min-width: 45px;
+                font-size: 10px;
+                padding: 4px;
+                margin-right: 2px; /* Reduzindo a margem entre os inputs */
+            }
+
+            .medida-group .toggle-icon {
+                width: auto;
+                flex-grow: 1;
+                text-align: right;
+            }
+
+            .resultado {
+                margin-bottom: 60px; /* Espaço para o botão fixo */
+            }
+        }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>Teste de localStorage</h1>
-        <input type="number" id="numeroInput" placeholder="Digite um número">
-        <button class="save-button" onclick="salvarNumero()">Salvar Número</button>
-        <button class="clear-button" onclick="limparNumero()">Limpar Número</button>
-        <div id="numeroSalvo"></div>
+        <div class="header">
+            <h1>Calculadora de M²</h1>
+        </div>
+        <div id="medidasContainer"></div>
+        <div class="resultado" id="resultado">Total M²: 0,00</div>
+    </div>
+    <div class="button-container">
+        <button class="add-button" onclick="addMedidaGroup()">Adicionar Medida</button>
+        <button class="clear-button" onclick="confirmClearMedidas()">Novo Orçamento</button>
     </div>
 
     <script>
-        // Função para verificar suporte ao localStorage
-        function isLocalStorageAvailable() {
-            try {
-                const test = '__localStorageTest__';
-                localStorage.setItem(test, test);
-                localStorage.removeItem(test);
-                return true;
-            } catch (e) {
-                return false;
-            }
-        }
+        function addMedidaGroup(largura = '', altura = '', quantidade = 1, isChecked = true, ambiente = '', tipoAplicacao = '') {
+            const container = document.getElementById('medidasContainer');
+            const lastGroup = container.lastElementChild;
 
-        // Função para salvar o número no localStorage
-        function salvarNumero() {
-            if (!isLocalStorageAvailable()) {
-                alert('localStorage não está disponível no seu navegador.');
+            if (lastGroup && !isGroupPopulated(lastGroup)) {
+                alert('Preencha todos os campos do grupo de medidas atual antes de adicionar um novo.');
                 return;
             }
-            const numero = document.getElementById('numeroInput').value;
-            if (numero) {
-                try {
-                    localStorage.setItem('numero', numero);
-                    exibirNumero();
-                    console.log('Número salvo com sucesso:', numero);
-                } catch (e) {
-                    console.error('Erro ao salvar no localStorage:', e);
-                    alert('Erro ao salvar no localStorage. Veja o console para mais detalhes.');
-                }
-            } else {
-                alert('Por favor, digite um número.');
+
+            const medidaGroup = document.createElement('div');
+            medidaGroup.classList.add('medida-group');
+
+            medidaGroup.innerHTML = `
+                <input type="checkbox" ${isChecked ? 'checked' : ''} onchange="toggleInputs(this)">
+                <input type="number" placeholder="Larg" value="${largura}" oninput="calculateTotal()">
+                <input type="number" placeholder="Alt" value="${altura}" oninput="calculateTotal()">
+                <input type="number" placeholder="Qtd" value="${quantidade}" oninput="calculateTotal()">
+                <input type="number" placeholder="Tm²" disabled>
+                <span class="toggle-icon" onclick="toggleAdditionalFields(this)">&#x25BC;</span>
+                <div class="additional-fields hidden">
+                    <select onchange="calculateTotal()">
+                        <option value="">Ambiente</option>
+                        <option value="Sala de estar">Sala de estar</option>
+                        <option value="Sala de jantar">Sala de jantar</option>
+                        <option value="Cozinha">Cozinha</option>
+                        <option value="Copa">Copa</option>
+                        <option value="Suite 1">Suite 1</option>
+                        <option value="Suite 2">Suite 2</option>
+                        <option value="Quarto 1">Quarto 1</option>
+                        <option value="Quarto 2">Quarto 2</option>
+                        <option value="Quarto 3">Quarto 3</option>
+                        <option value="Quarto 4">Quarto 4</option>
+                        <option value="Quarto empregada">Quarto empregada</option>
+                        <option value="Quarto principal">Quarto principal</option>
+                        <option value="Quarto de hóspedes">Quarto de hóspedes</option>
+                        <option value="Banheiro 1">Banheiro 1</option>
+                        <option value="Banheiro 2">Banheiro 2</option>
+                        <option value="Banheiro 3">Banheiro 3</option>
+                        <option value="Banheiro de hóspedes">Banheiro de hóspedes</option>
+                        <option value="Corredor">Corredor</option>
+                        <option value="Escada">Escada</option>
+                        <option value="Escritório">Escritório</option>
+                        <option value="Lavanderia">Lavanderia</option>
+                        <option value="Garagem">Garagem</option>
+                        <option value="Varanda">Varanda</option>
+                        <option value="Jardim">Jardim</option>
+                        <option value="Sotão">Sotão</option>
+                        <option value="Porão">Porão</option>
+                        <option value="Outros">Outros</option>
+                    </select>
+                    <select onchange="calculateTotal()">
+                        <option value="">Tipo de Aplicação</option>
+                        <option value="Janela Padrão">Janela Padrão</option>
+                        <option value="Janelão">Janelão</option>
+                        <option value="Porta">Porta</option>
+                        <option value="Porta Balcão">Porta Balcão</option>
+                        <option value="Vitrine">Vitrine</option>
+                        <option value="Tampo de mesa">Tampo de mesa</option>
+                        <option value="Box de banheiro">Box de banheiro</option>
+                        <option value="Guarda-corpo">Guarda-corpo</option>
+                        <option value="Dispensa">Dispensa</option>
+                        <option value="Armário">Armário</option>
+                        <option value="Teto">Teto</option>
+                        <option value="Parede divisória">Parede divisória</option>
+                        <option value="Fachada">Fachada</option>
+                        <option value="Claraboia">Claraboia</option>
+                        <option value="Balcão">Balcão</option>
+                        <option value="Outras">Outras</option>
+                    </select>
+                </div>
+            `;
+
+            container.appendChild(medidaGroup);
+
+            // Definir os valores das seleções
+            const selects = medidaGroup.querySelectorAll('select');
+            if (selects.length > 0) {
+                selects[0].value = ambiente;
+                selects[1].value = tipoAplicacao;
             }
+
+            // Dar foco no último grupo de medidas adicionado
+            const inputs = medidaGroup.querySelectorAll('input[type="number"]');
+            if (inputs.length > 0) {
+                inputs[0].focus();
+                medidaGroup.scrollIntoView({ behavior: 'smooth' });
+            }
+
+            calculateTotal();
         }
 
-        // Função para exibir o número salvo
-        function exibirNumero() {
-            if (!isLocalStorageAvailable()) {
-                alert('localStorage não está disponível no seu navegador.');
-                return;
-            }
-            try {
-                const numeroSalvo = localStorage.getItem('numero');
-                if (numeroSalvo) {
-                    document.getElementById('numeroSalvo').innerText = `Número salvo: ${numeroSalvo}`;
-                    console.log('Número carregado com sucesso:', numeroSalvo);
+        function isGroupPopulated(group) {
+            const inputs = group.querySelectorAll('input[type="number"]');
+            return Array.from(inputs).every(input => input.value.trim() !== '');
+        }
+
+        function toggleInputs(checkbox) {
+            const inputs = checkbox.parentElement.querySelectorAll('input[type="number"], select, button, .toggle-icon');
+            inputs.forEach(input => {
+                if (checkbox.checked) {
+                    input.disabled = false;
+                    input.classList.remove('disabled');
                 } else {
-                    document.getElementById('numeroSalvo').innerText = 'Nenhum número salvo.';
-                    console.log('Nenhum número salvo encontrado.');
+                    input.disabled = true;
+                    input.classList.add('disabled');
                 }
-            } catch (e) {
-                console.error('Erro ao carregar do localStorage:', e);
-                alert('Erro ao carregar do localStorage. Veja o console para mais detalhes.');
-            }
+            });
+            calculateTotal();
         }
 
-        // Função para limpar o número do localStorage
-        function limparNumero() {
-            if (!isLocalStorageAvailable()) {
-                alert('localStorage não está disponível no seu navegador.');
-                return;
-            }
+        function toggleAdditionalFields(icon) {
+            const additionalFields = icon.parentElement.querySelector('.additional-fields');
+            additionalFields.classList.toggle('hidden');
+            icon.innerHTML = additionalFields.classList.contains('hidden') ? '&#x25BC;' : '&#x25B2;';
+        }
+
+        function calculateTotal() {
+            const medidaGroups = document.querySelectorAll('.medida-group');
+            let totalM2 = 0;
+
+            medidaGroups.forEach(group => {
+                const isChecked = group.querySelector('input[type="checkbox"]').checked;
+                const largura = parseFloat(group.children[1].value);
+                const altura = parseFloat(group.children[2].value);
+                const quantidade = parseInt(group.children[3].value);
+
+                if (isChecked && !isNaN(largura) && !isNaN(altura) && !isNaN(quantidade)) {
+                    const total = largura * altura * quantidade;
+                    totalM2 += total;
+                    group.children[4].value = total.toFixed(2);
+                    // Remove classe inválida se a medida for válida
+                    group.children[1].classList.remove('invalid');
+                    group.children[2].classList.remove('invalid');
+                    group.children[3].classList.remove('invalid');
+                } else {
+                    group.children[4].value = 0;
+                    // Adiciona classe inválida se a medida não for válida
+                    if (isNaN(largura)) group.children[1].classList.add('invalid');
+                    else group.children[1].classList.remove('invalid');
+
+                    if (isNaN(altura)) group.children[2].classList.add('invalid');
+                    else group.children[2].classList.remove('invalid');
+
+                    if (isNaN(quantidade)) group.children[3].classList.add('invalid');
+                    else group.children[3].classList.remove('invalid');
+                }
+            });
+
+            document.getElementById('resultado').innerText = `Total M²: ${totalM2.toFixed(2)}`;
+            saveMedidas();
+        }
+
+        function saveMedidas() {
             try {
-                localStorage.removeItem('numero');
-                exibirNumero();
-                console.log('Número limpo com sucesso.');
+                const medidaGroups = document.querySelectorAll('.medida-group');
+                const medidas = Array.from(medidaGroups).map(group => {
+                    const isChecked = group.querySelector('input[type="checkbox"]').checked;
+                    const largura = group.children[1].value;
+                    const altura = group.children[2].value;
+                    const quantidade = group.children[3].value;
+                    const ambiente = group.querySelector('.additional-fields select:nth-child(1)').value;
+                    const tipoAplicacao = group.querySelector('.additional-fields select:nth-child(2)').value;
+                    return { isChecked, largura, altura, quantidade, ambiente, tipoAplicacao };
+                });
+                localStorage.setItem('medidas', JSON.stringify(medidas));
+                console.log('Medidas salvas com sucesso.');
             } catch (e) {
-                console.error('Erro ao limpar do localStorage:', e);
-                alert('Erro ao limpar do localStorage. Veja o console para mais detalhes.');
+                console.error('Erro ao salvar medidas:', e);
             }
         }
 
-        // Carrega o número salvo ao carregar a página
-        window.onload = exibirNumero;
+        function loadMedidas() {
+            try {
+                const savedMedidas = localStorage.getItem('medidas');
+                if (savedMedidas) {
+                    const medidas = JSON.parse(savedMedidas);
+                    medidas.forEach(medida => {
+                        addMedidaGroup(medida.largura, medida.altura, medida.quantidade, medida.isChecked, medida.ambiente, medida.tipoAplicacao);
+                    });
+                } else {
+                    addMedidaGroup();
+                }
+                console.log('Medidas carregadas com sucesso.');
+            } catch (e) {
+                console.error('Erro ao carregar medidas:', e);
+                addMedidaGroup();
+            }
+        }
+
+        function clearMedidas() {
+            try {
+                localStorage.removeItem('medidas');
+                document.getElementById('medidasContainer').innerHTML = '';
+                addMedidaGroup();
+                calculateTotal();
+                console.log('Medidas limpas com sucesso.');
+            } catch (e) {
+                console.error('Erro ao limpar medidas:', e);
+            }
+        }
+
+        function confirmClearMedidas() {
+            if (confirm("Tem certeza que deseja iniciar um novo orçamento? Isso apagará todas as medidas atuais.")) {
+                clearMedidas();
+            }
+        }
+
+        // Carrega as medidas salvas ao carregar a página
+        window.onload = loadMedidas;
     </script>
 </body>
 </html>
