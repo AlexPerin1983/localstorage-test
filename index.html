@@ -4,174 +4,167 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Calculadora de M²</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&family=Montserrat:wght@700&display=swap" rel="stylesheet">
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 20px;
-            background-color: #f0f0f0;
-        }
+       body {
+    font-family: 'Roboto', sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f7f8fc;
+    color: #333;
+}
 
-        .container {
-            max-width: 600px; /* Largura máxima em desktops */
-            margin: 0 auto;
-            background-color: #fff;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-        }
+.container {
+    max-width: 800px;
+    margin: 40px auto;
+    background-color: #fff;
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+}
 
-        .header {
-            text-align: center;
-            margin-bottom: 20px;
-        }
+.header {
+    text-align: center;
+    margin-bottom: 20px;
+}
 
-        .header h1 {
-            font-size: 24px;
-            margin: 0;
-        }
+.header h1 {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 28px;
+    color: #4CAF50;
+    margin: 0;
+}
 
-        .medida-group {
-            display: flex;
-            align-items: center;
-            margin-bottom: 10px;
-            padding: 5px 0;
-            flex-wrap: wrap;
-        }
+.medida-group {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 15px;
+    padding: 10px 0;
+    border-bottom: 1px solid #ddd;
+}
 
-        .medida-group input, .medida-group select {
-            padding: 6px;
-            margin-right: 5px;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-            font-size: 12px;
-            width: 60px;
-            box-sizing: border-box;
-            min-width: 60px; /* largura mínima */
-        }
+.medida-row {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+}
 
-        .medida-group input[type="checkbox"], .medida-group .toggle-icon {
-            width: 30px;
-            flex-shrink: 0;
-            text-align: center;
-        }
+.medida-group input, .medida-group select {
+    padding: 8px;
+    margin-right: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 14px;
+    flex: 1 1 60px;
+    box-sizing: border-box;
+    min-width: 60px;
+}
 
-        .medida-group input.invalid {
-            border-color: #ff0000;
-        }
+.medida-group input[type="checkbox"], .medida-group .toggle-icon {
+    width: 30px;
+    flex-shrink: 0;
+    text-align: center;
+}
 
-        .medida-group input.disabled, .medida-group select.disabled {
-            opacity: 0.5;
-        }
+.medida-group input.invalid {
+    border-color: #ff0000;
+}
 
-        .medida-group .hidden {
-            display: none;
-        }
+.medida-group input.disabled, .medida-group select.disabled {
+    opacity: 0.5;
+}
 
-        .resultado {
-            text-align: right;
-            margin-top: 20px;
-            font-size: 18px;
-            font-weight: bold;
-        }
+.medida-group .hidden {
+    display: none;
+}
 
-        .button-container {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-top: 20px;
-            flex-wrap: wrap;
-        }
+.resultado {
+    text-align: right;
+    margin-top: 20px;
+    font-size: 20px;
+    font-weight: bold;
+    color: #4CAF50;
+}
 
-        .add-button, .clear-button {
-            background-color: #28a745;
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 16px;
-            margin: 5px;
-            flex-grow: 1;
-            text-align: center;
-        }
+.button-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 20px;
+    flex-wrap: wrap;
+}
 
-        .add-button:hover, .clear-button:hover {
-            background-color: #218838;
-        }
+.add-button, .clear-button {
+    background: linear-gradient(45deg, #4CAF50, #388E3C);
+    color: white;
+    border: none;
+    padding: 15px 30px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 16px;
+    margin: 10px;
+    flex-grow: 1;
+    text-align: center;
+    transition: background 0.3s ease;
+}
 
-        .clear-button {
-            background-color: #dc3545;
-        }
+.add-button:hover {
+    background: linear-gradient(45deg, #388E3C, #4CAF50);
+}
 
-        .clear-button:hover {
-            background-color: #c82333;
-        }
+.clear-button {
+    background: linear-gradient(45deg, #FF5722, #E64A19);
+}
 
-        .toggle-icon {
-            cursor: pointer;
-            font-size: 16px;
-        }
+.clear-button:hover {
+    background: linear-gradient(45deg, #E64A19, #FF5722);
+}
 
-        .additional-fields {
-            display: flex;
-            width: 100%;
-            justify-content: space-between;
-            flex-wrap: wrap;
-            margin-top: 10px;
-        }
+.toggle-icon {
+    cursor: pointer;
+    font-size: 18px;
+    color: #4CAF50;
+}
 
-        .additional-fields select {
-            flex: 1 1 45%;
-            margin-top: 5px;
-        }
+.additional-fields {
+    display: flex;
+    width: 100%;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    margin-top: 10px;
+    transition: all 0.3s ease;
+}
 
-        @media (max-width: 600px) {
-            .container {
-                max-width: 100%;
-                padding: 0 10px; /* Ajuste de padding da container */
-            }
+.additional-fields select {
+    flex: 1 1 45%;
+    margin-top: 5px;
+}
 
-            .button-container {
-                position: fixed;
-                bottom: 0;
-                left: 0;
-                width: 100%;
-                background-color: #fff;
-                padding: 10px 0;
-                box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
-                z-index: 1000;
-            }
+@media (max-width: 600px) {
+    .container {
+        max-width: 100%;
+        padding: 20px;
+    }
 
-            .add-button, .clear-button {
-                width: 45%;
-                margin: 0 2.5%;
-            }
+    .button-container {
+        flex-direction: column;
+    }
 
-            .medida-group {
-                justify-content: space-between;
-                margin: 0; /* Removendo margens ao redor do grupo */
-                padding: 0; /* Removendo padding ao redor do grupo */
-            }
+    .add-button, .clear-button {
+        width: 100%;
+        margin: 10px 0;
+    }
 
-            .medida-group input, .medida-group select {
-                width: 45px;
-                min-width: 45px;
-                font-size: 10px;
-                padding: 4px;
-                margin-right: 2px; /* Reduzindo a margem entre os inputs */
-            }
+    .medida-group input, .medida-group select {
+        width: 100%;
+        margin-bottom: 10px;
+    }
 
-            .medida-group .toggle-icon {
-                width: auto;
-                flex-grow: 1;
-                text-align: right;
-            }
+    .resultado {
+        margin-bottom: 60px;
+    }
+}
 
-            .resultado {
-                margin-bottom: 60px; /* Espaço para o botão fixo */
-            }
-        }
     </style>
 </head>
 <body>
@@ -181,10 +174,10 @@
         </div>
         <div id="medidasContainer"></div>
         <div class="resultado" id="resultado">Total M²: 0,00</div>
-    </div>
-    <div class="button-container">
-        <button class="add-button" onclick="addMedidaGroup()">Adicionar Medida</button>
-        <button class="clear-button" onclick="confirmClearMedidas()">Novo Orçamento</button>
+        <div class="button-container">
+            <button class="add-button" onclick="addMedidaGroup()">Adicionar Medida</button>
+            <button class="clear-button" onclick="confirmClearMedidas()">Novo Orçamento</button>
+        </div>
     </div>
 
     <script>
@@ -201,12 +194,14 @@
             medidaGroup.classList.add('medida-group');
 
             medidaGroup.innerHTML = `
-                <input type="checkbox" ${isChecked ? 'checked' : ''} onchange="toggleInputs(this)">
-                <input type="number" placeholder="Larg" value="${largura}" oninput="calculateTotal()">
-                <input type="number" placeholder="Alt" value="${altura}" oninput="calculateTotal()">
-                <input type="number" placeholder="Qtd" value="${quantidade}" oninput="calculateTotal()">
-                <input type="number" placeholder="Tm²" disabled>
-                <span class="toggle-icon" onclick="toggleAdditionalFields(this)">&#x25BC;</span>
+                <div class="medida-row">
+                    <input type="checkbox" ${isChecked ? 'checked' : ''} onchange="toggleInputs(this)">
+                    <input type="number" placeholder="Larg" value="${largura}" oninput="calculateTotal()">
+                    <input type="number" placeholder="Alt" value="${altura}" oninput="calculateTotal()">
+                    <input type="number" placeholder="Qtd" value="${quantidade}" oninput="calculateTotal()">
+                    <input type="number" placeholder="Tm²" disabled>
+                    <span class="toggle-icon" onclick="toggleAdditionalFields(this)">&#x25BC;</span>
+                </div>
                 <div class="additional-fields hidden">
                     <select onchange="calculateTotal()">
                         <option value="">Ambiente</option>
@@ -285,7 +280,7 @@
         }
 
         function toggleInputs(checkbox) {
-            const inputs = checkbox.parentElement.querySelectorAll('input[type="number"], select, button, .toggle-icon');
+            const inputs = checkbox.parentElement.querySelectorAll('input[type="number"], select');
             inputs.forEach(input => {
                 if (checkbox.checked) {
                     input.disabled = false;
@@ -299,7 +294,7 @@
         }
 
         function toggleAdditionalFields(icon) {
-            const additionalFields = icon.parentElement.querySelector('.additional-fields');
+            const additionalFields = icon.parentElement.nextElementSibling;
             additionalFields.classList.toggle('hidden');
             icon.innerHTML = additionalFields.classList.contains('hidden') ? '&#x25BC;' : '&#x25B2;';
         }
@@ -310,29 +305,27 @@
 
             medidaGroups.forEach(group => {
                 const isChecked = group.querySelector('input[type="checkbox"]').checked;
-                const largura = parseFloat(group.children[1].value);
-                const altura = parseFloat(group.children[2].value);
-                const quantidade = parseInt(group.children[3].value);
+                const largura = parseFloat(group.querySelector('input[placeholder="Larg"]').value);
+                const altura = parseFloat(group.querySelector('input[placeholder="Alt"]').value);
+                const quantidade = parseInt(group.querySelector('input[placeholder="Qtd"]').value);
 
                 if (isChecked && !isNaN(largura) && !isNaN(altura) && !isNaN(quantidade)) {
                     const total = largura * altura * quantidade;
                     totalM2 += total;
-                    group.children[4].value = total.toFixed(2);
-                    // Remove classe inválida se a medida for válida
-                    group.children[1].classList.remove('invalid');
-                    group.children[2].classList.remove('invalid');
-                    group.children[3].classList.remove('invalid');
+                    group.querySelector('input[placeholder="Tm²"]').value = total.toFixed(2);
+                    group.querySelector('input[placeholder="Larg"]').classList.remove('invalid');
+                    group.querySelector('input[placeholder="Alt"]').classList.remove('invalid');
+                    group.querySelector('input[placeholder="Qtd"]').classList.remove('invalid');
                 } else {
-                    group.children[4].value = 0;
-                    // Adiciona classe inválida se a medida não for válida
-                    if (isNaN(largura)) group.children[1].classList.add('invalid');
-                    else group.children[1].classList.remove('invalid');
+                    group.querySelector('input[placeholder="Tm²"]').value = 0;
+                    if (isNaN(largura)) group.querySelector('input[placeholder="Larg"]').classList.add('invalid');
+                    else group.querySelector('input[placeholder="Larg"]').classList.remove('invalid');
 
-                    if (isNaN(altura)) group.children[2].classList.add('invalid');
-                    else group.children[2].classList.remove('invalid');
+                    if (isNaN(altura)) group.querySelector('input[placeholder="Alt"]').classList.add('invalid');
+                    else group.querySelector('input[placeholder="Alt"]').classList.remove('invalid');
 
-                    if (isNaN(quantidade)) group.children[3].classList.add('invalid');
-                    else group.children[3].classList.remove('invalid');
+                    if (isNaN(quantidade)) group.querySelector('input[placeholder="Qtd"]').classList.add('invalid');
+                    else group.querySelector('input[placeholder="Qtd"]').classList.remove('invalid');
                 }
             });
 
@@ -345,9 +338,9 @@
                 const medidaGroups = document.querySelectorAll('.medida-group');
                 const medidas = Array.from(medidaGroups).map(group => {
                     const isChecked = group.querySelector('input[type="checkbox"]').checked;
-                    const largura = group.children[1].value;
-                    const altura = group.children[2].value;
-                    const quantidade = group.children[3].value;
+                    const largura = group.querySelector('input[placeholder="Larg"]').value;
+                    const altura = group.querySelector('input[placeholder="Alt"]').value;
+                    const quantidade = group.querySelector('input[placeholder="Qtd"]').value;
                     const ambiente = group.querySelector('.additional-fields select:nth-child(1)').value;
                     const tipoAplicacao = group.querySelector('.additional-fields select:nth-child(2)').value;
                     return { isChecked, largura, altura, quantidade, ambiente, tipoAplicacao };
