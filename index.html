@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teste de localStorage</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f0f0f0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+        }
+
+        .container {
+            max-width: 300px;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        input[type="number"] {
+            padding: 10px;
+            font-size: 16px;
+            width: calc(100% - 22px);
+            margin-bottom: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-bottom: 10px;
+            width: 100%;
+        }
+
+        .save-button {
+            background-color: #28a745;
+            color: white;
+        }
+
+        .save-button:hover {
+            background-color: #218838;
+        }
+
+        .clear-button {
+            background-color: #dc3545;
+            color: white;
+        }
+
+        .clear-button:hover {
+            background-color: #c82333;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Teste de localStorage</h1>
+        <input type="number" id="numeroInput" placeholder="Digite um número">
+        <button class="save-button" onclick="salvarNumero()">Salvar Número</button>
+        <button class="clear-button" onclick="limparNumero()">Limpar Número</button>
+        <div id="numeroSalvo"></div>
+    </div>
+
+    <script>
+        // Função para verificar suporte ao localStorage
+        function isLocalStorageAvailable() {
+            try {
+                const test = '__localStorageTest__';
+                localStorage.setItem(test, test);
+                localStorage.removeItem(test);
+                return true;
+            } catch (e) {
+                return false;
+            }
+        }
+
+        // Função para salvar o número no localStorage
+        function salvarNumero() {
+            if (!isLocalStorageAvailable()) {
+                alert('localStorage não está disponível no seu navegador.');
+                return;
+            }
+            const numero = document.getElementById('numeroInput').value;
+            if (numero) {
+                try {
+                    localStorage.setItem('numero', numero);
+                    exibirNumero();
+                    console.log('Número salvo com sucesso:', numero);
+                } catch (e) {
+                    console.error('Erro ao salvar no localStorage:', e);
+                    alert('Erro ao salvar no localStorage. Veja o console para mais detalhes.');
+                }
+            } else {
+                alert('Por favor, digite um número.');
+            }
+        }
+
+        // Função para exibir o número salvo
+        function exibirNumero() {
+            if (!isLocalStorageAvailable()) {
+                alert('localStorage não está disponível no seu navegador.');
+                return;
+            }
+            try {
+                const numeroSalvo = localStorage.getItem('numero');
+                if (numeroSalvo) {
+                    document.getElementById('numeroSalvo').innerText = `Número salvo: ${numeroSalvo}`;
+                    console.log('Número carregado com sucesso:', numeroSalvo);
+                } else {
+                    document.getElementById('numeroSalvo').innerText = 'Nenhum número salvo.';
+                    console.log('Nenhum número salvo encontrado.');
+                }
+            } catch (e) {
+                console.error('Erro ao carregar do localStorage:', e);
+                alert('Erro ao carregar do localStorage. Veja o console para mais detalhes.');
+            }
+        }
+
+        // Função para limpar o número do localStorage
+        function limparNumero() {
+            if (!isLocalStorageAvailable()) {
+                alert('localStorage não está disponível no seu navegador.');
+                return;
+            }
+            try {
+                localStorage.removeItem('numero');
+                exibirNumero();
+                console.log('Número limpo com sucesso.');
+            } catch (e) {
+                console.error('Erro ao limpar do localStorage:', e);
+                alert('Erro ao limpar do localStorage. Veja o console para mais detalhes.');
+            }
+        }
+
+        // Carrega o número salvo ao carregar a página
+        window.onload = exibirNumero;
+    </script>
+</body>
+</html>
