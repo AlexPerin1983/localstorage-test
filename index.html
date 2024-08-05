@@ -510,7 +510,7 @@
     }
 
     const { jsPDF } = window.jspdf;
-    const doc = new jsPDF('p', 'mm', 'a4');
+    const doc = new jsPDF();
     const pageWidth = doc.internal.pageSize.width;
     const pageHeight = doc.internal.pageSize.height;
     const margin = 15;
@@ -525,48 +525,56 @@
     };
 
     const addHeader = () => {
-        const date = new Date().toLocaleDateString();
-        const time = new Date().toLocaleTimeString();
+        const date = new Date().toLocaleDateString('pt-BR');
+        const time = new Date().toLocaleTimeString('pt-BR');
         
-        doc.setFillColor(41, 128, 185); // Azul corporativo
-        doc.rect(0, 0, pageWidth, 40, 'F');
+        // Cabeçalho estilizado
+        doc.setFillColor(41, 128, 185);
+        doc.rect(0, 0, pageWidth, 35, 'F');
         
+        // Logo (simulado com texto, substitua por uma imagem real se possível)
         doc.setTextColor(255);
-        doc.setFont("helvetica", "bold");
         doc.setFontSize(24);
-        doc.text("Orçamento de Medidas", margin, 25);
-        
-        doc.setFont("helvetica", "normal");
-        doc.setFontSize(10);
-        doc.text(`Data: ${date} | Hora: ${time}`, pageWidth - margin, 15, { align: 'right' });
-        doc.text(`Cliente: ${cliente}`, pageWidth - margin, 25, { align: 'right' });
+        doc.setFont(undefined, 'bold');
+        doc.text("FUME JP", margin, 25);
 
-        y = 50; // Posição após o cabeçalho
+        doc.setFontSize(16);
+        doc.setFont(undefined, 'normal');
+        doc.text("Orçamento de Medidas", pageWidth - margin, 20, { align: 'right' });
+        
+        doc.setFontSize(10);
+        doc.text(`Data: ${date} | Hora: ${time}`, pageWidth - margin, 30, { align: 'right' });
+
+        y = 45;
     };
 
     const addFooter = () => {
-        const pageNumber = doc.internal.getNumberOfPages();
         doc.setFillColor(41, 128, 185);
         doc.rect(0, pageHeight - 20, pageWidth, 20, 'F');
+        
         doc.setTextColor(255);
-        doc.setFont("helvetica", "normal");
         doc.setFontSize(10);
-        doc.text(`Página ${pageNumber}`, pageWidth / 2, pageHeight - 10, { align: 'center' });
+        doc.text(`Página ${doc.internal.getNumberOfPages()}`, pageWidth / 2, pageHeight - 10, { align: 'center' });
+        
+        // Links clicáveis
+        doc.setTextColor(255, 255, 255);
+        doc.textWithLink('Contato: (83) 99301-5765', margin, pageHeight - 10, { url: 'https://wa.me/5583993015765' });
+        doc.textWithLink('WWW.fumejp.com.br', pageWidth - margin, pageHeight - 10, { align: 'right', url: 'https://fumejp.com.br/' });
     };
 
     const addSectionTitle = (title) => {
-        if (y > pageHeight - 60) addPage();
-        doc.setFillColor(236, 240, 241); // Cinza claro
+        if (y > pageHeight - 40) addPage();
+        doc.setFillColor(52, 152, 219);
         doc.rect(margin, y, pageWidth - 2 * margin, 10, 'F');
-        doc.setTextColor(52, 73, 94); // Azul escuro
-        doc.setFont("helvetica", "bold");
+        doc.setTextColor(255);
         doc.setFontSize(14);
+        doc.setFont(undefined, 'bold');
         doc.text(title, margin + 5, y + 7);
         y += 15;
     };
 
     const addMedidaItem = (medida, index) => {
-        if (y > pageHeight - 80) addPage();
+        if (y > pageHeight - 60) addPage();
 
         const isChecked = medida.querySelector('input[type="checkbox"]').checked;
         const largura = medida.querySelector('input[placeholder="L"]').value;
@@ -576,26 +584,28 @@
         const ambiente = medida.querySelector('select:first-of-type').value;
         const tipoAplicacao = medida.querySelector('select:last-of-type').value;
 
-        doc.setFillColor(236, 240, 241);
-        doc.roundedRect(margin, y, pageWidth - 2 * margin, 30, 3, 3, 'F');
+        // Fundo alternado para melhor legibilidade
+        if (index % 2 === 0) {
+            doc.setFillColor(240, 240, 240);
+            doc.rect(margin, y, pageWidth - 2 * margin, 30, 'F');
+        }
 
         doc.setTextColor(52, 73, 94);
-        doc.setFont("helvetica", "bold");
         doc.setFontSize(12);
+        doc.setFont(undefined, 'bold');
         doc.text(`Medida ${index + 1}`, margin + 5, y + 6);
 
-        doc.setFont("helvetica", "normal");
+        doc.setFont(undefined, 'normal');
         doc.setFontSize(10);
         doc.text(`L: ${largura} | A: ${altura} | Q: ${quantidade} | Total: ${totalM2} m²`, margin + 5, y + 16);
         doc.text(`Ambiente: ${ambiente}`, margin + 5, y + 26);
         doc.text(`Tipo: ${tipoAplicacao}`, pageWidth / 2, y + 26);
 
-        // Ícone de verificação
         if (isChecked) {
             doc.setFillColor(39, 174, 96);
-            doc.circle(pageWidth - margin - 10, y + 15, 5, 'F');
+            doc.circle(pageWidth - margin - 10, y + 15, 4, 'F');
             doc.setTextColor(255);
-            doc.text("✓", pageWidth - margin - 12, y + 17);
+            doc.text("✓", pageWidth - margin - 11.5, y + 16.5);
         }
 
         y += 35;
@@ -604,6 +614,16 @@
     // Gerar PDF
     addHeader();
     addFooter();
+
+    // Informações do cliente
+    doc.setTextColor(52, 73, 94);
+    doc.setFontSize(12);
+    doc.text(`Cliente: ${cliente}`, margin, y);
+    y += 10;
+    doc.text(`Endereço: [Endereço do Cliente]`, margin, y);
+    y += 10;
+    doc.text(`Telefone: [Telefone do Cliente]`, margin, y);
+    y += 20;
 
     addSectionTitle("Detalhes das Medidas");
 
@@ -614,21 +634,42 @@
 
     addSectionTitle("Resumo");
     const totalGeral = document.getElementById('resultado').innerText;
-    doc.setFont("helvetica", "bold");
+    doc.setFont(undefined, 'bold');
     doc.setFontSize(16);
     doc.setTextColor(41, 128, 185);
     doc.text(totalGeral, pageWidth - margin, y, { align: 'right' });
+    y += 20;
+
+    // Termos e condições
+    addSectionTitle("Termos e Condições");
+    doc.setFont(undefined, 'normal');
+    doc.setFontSize(10);
+    doc.setTextColor(52, 73, 94);
+    const terms = `
+1. Este orçamento é válido por 30 dias a partir da data de emissão.
+2. O prazo de entrega será acordado após a aprovação do orçamento.
+3. O pagamento deverá ser feito conforme as condições acordadas.
+4. Quaisquer alterações nas medidas ou especificações podem resultar em ajustes no orçamento.
+5. A Fume JP se compromete a utilizar materiais de alta qualidade em todos os serviços.
+    `;
+    doc.text(terms, margin, y, {
+        maxWidth: pageWidth - 2 * margin,
+        align: 'justify'
+    });
 
     // Adicionar marca d'água
-    doc.setTextColor(220, 220, 220);
+    const watermarkText = "FUME JP";
+    doc.setFont(undefined, 'bold');
+    doc.setTextColor(230, 230, 230, 0.5);
     doc.setFontSize(60);
-    doc.text("ORÇAMENTO", pageWidth / 2, pageHeight / 2, {
+    doc.text(watermarkText, pageWidth / 2, pageHeight / 2, {
         align: 'center',
         angle: 45
     });
 
     doc.save(`orcamento_${cliente.replace(/\s+/g, '_').toLowerCase()}.pdf`);
 };
+
 
         window.onload = () => {
             carregarClientes();
