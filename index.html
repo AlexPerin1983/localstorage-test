@@ -438,27 +438,37 @@ calculateTotal();
         }
 
         function calculateTotal() {
-            const medidaGroups = document.querySelectorAll('.medida-group');
-            let totalM2 = 0;
+    const medidaGroups = document.querySelectorAll('.medida-group');
+    let totalM2 = 0;
 
-            medidaGroups.forEach(group => {
-                const isChecked = group.querySelector('input[type="checkbox"]').checked;
-                const largura = parseFloat(group.querySelector('input[placeholder="L"]').value) || 0;
-                const altura = parseFloat(group.querySelector('input[placeholder="A"]').value) || 0;
-                const quantidade = parseInt(group.querySelector('input[placeholder="Q"]').value) || 0;
+    medidaGroups.forEach(group => {
+        const isChecked = group.querySelector('input[type="checkbox"]').checked;
+        const largura = parseFloat(group.querySelector('input[placeholder="L"]').value) || 0;
+        const altura = parseFloat(group.querySelector('input[placeholder="A"]').value) || 0;
+        const quantidade = parseInt(group.querySelector('input[placeholder="Q"]').value) || 0;
 
-                if (isChecked) {
-                    const total = largura * altura * quantidade;
-                    totalM2 += total;
-                    group.querySelector('input[placeholder="T"]').value = total.toFixed(2);
-                } else {
-                    group.querySelector('input[placeholder="T"]').value = '0.00';
-                }
-            });
-
-            document.getElementById('resultado').innerText = `Total M²: ${totalM2.toFixed(2)}`;
-            saveMedidas();
+        const total = largura * altura * quantidade;
+        
+        if (isChecked) {
+            totalM2 += total;
+            group.querySelector('input[placeholder="T"]').value = total.toFixed(2);
+        } else {
+            group.querySelector('input[placeholder="T"]').value = '0.00';
         }
+    });
+
+    document.getElementById('resultado').innerText = `Total M²: ${totalM2.toFixed(2)}`;
+    saveMedidas();
+}
+
+// Função para alternar inputs e recalcular o total
+function toggleInputs(checkbox) {
+    const inputs = checkbox.closest('.medida-row').querySelectorAll('input[type="number"]');
+    inputs.forEach(input => {
+        input.disabled = !checkbox.checked;
+    });
+    calculateTotal(); // Recalcula o total quando a checkbox muda
+}
 
         function saveMedidas() {
             const cliente = clienteSelect.value;
