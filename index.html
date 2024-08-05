@@ -8,239 +8,330 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script>
  
     <style>
-        /* Estilos gerais do corpo da página */
-        body {
-            font-family: 'Roboto', sans-serif;
-            margin: 0;
-            padding: 0;
-            background-color: #f7f8fc;
-            color: #333;
-        }
-    
-        /* Container principal */
-        .container {
-            max-width: 1000px;
-            margin: 20px auto;
-            background-color: #fff;
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
-        }
-    
-        /* Estilos do cabeçalho */
-        .header {
-            text-align: center;
-            margin-bottom: 20px;
-        }
-    
-        .header h1 {
-            font-family: 'Montserrat', sans-serif;
-            font-size: 24px;
-            color: #4CAF50;
-            margin: 0;
-        }
-    
-        /* Estilos do container de cliente */
-        .cliente-container {
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-            margin-bottom: 20px;
-        }
-    
-        .cliente-container select,
-        .cliente-container input,
-        .cliente-container button {
-            padding: 10px;
-            font-size: 16px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-        }
-    
-        .cliente-container button {
-            background: #4CAF50;
-            color: white;
-            border: none;
-            cursor: pointer;
-            transition: background 0.3s ease;
-        }
-    
-        .cliente-container button:hover {
-            background: #388E3C;
-        }
-    
-        /* Estilos do grupo de medidas */
-        .medida-group {
-            background-color: #f9f9f9;
-            border-radius: 5px;
-            padding: 10px;
-            margin-bottom: 15px;
-        }
-    
-        .medida-row {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            gap: 5px;
-            margin-bottom: 10px;
-        }
-    
-        /* Estilos dos inputs numéricos */
-        .medida-group input[type="number"] {
-            flex: 1;
-            min-width: 0;
-            padding: 10px; /* Aumentado para inputs maiores */
-            font-size: 20px; /* Aumentado para texto mais legível */
-            border: 1px solid #ddd;
-            border-radius: 5px;
-        }
+/* Importação de fonte */
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&family=Montserrat:wght@600;700&display=swap');
 
-         /* Novo estilo para o input Total m² */
-    .medida-group input[placeholder="T"] {
-        flex: 1.5; /* Faz este input 50% mais largo que os outros */
+/* Estilos gerais do corpo da página */
+body {
+    font-family: 'Roboto', sans-serif;
+    margin: 0;
+    padding: 0;
+    background-image: url('https://source.unsplash.com/1920x1080/?architecture,window');
+    background-size: cover;
+    background-attachment: fixed;
+    background-position: center;
+    color: #333;
+    text-shadow: 1px 1px 1px rgba(255, 255, 255, 0.5);
+}
+
+/* Container principal */
+.container {
+    max-width: 1000px;
+    margin: 20px auto;
+    background-color: rgba(255, 255, 255, 0.7);
+    backdrop-filter: blur(10px);
+    padding: 20px;
+    border-radius: 15px;
+    box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+}
+
+/* Estilos do cabeçalho */
+.header {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.header h1 {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 24px;
+    color: #1a1a1a;
+    margin: 0;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Estilos do container de cliente */
+.cliente-container {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.cliente-container select,
+.cliente-container input,
+.cliente-container button {
+    padding: 10px;
+    font-size: 16px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 5px;
+    background-color: rgba(255, 255, 255, 0.8);
+    backdrop-filter: blur(5px);
+    transition: all 0.3s ease;
+}
+
+.cliente-container button {
+    background: rgba(76, 175, 80, 0.8);
+    color: white;
+    border: none;
+    cursor: pointer;
+    transition: background 0.3s ease;
+}
+
+.cliente-container button:hover {
+    background: rgba(76, 175, 80, 1);
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+/* Estilos do grupo de medidas */
+.medida-group {
+    background-color: rgba(255, 255, 255, 0.5);
+    backdrop-filter: blur(5px);
+    border-radius: 10px;
+    padding: 10px;
+    margin-bottom: 15px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.medida-group:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+}
+
+.medida-group:first-child {
+    background-color: rgba(255, 255, 255, 0.8);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+}
+
+.medida-group::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 50%;
+    background: linear-gradient(to bottom, rgba(255, 255, 255, 0.15), transparent);
+    pointer-events: none;
+    border-radius: 10px 10px 0 0;
+}
+
+.medida-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 5px;
+    margin-bottom: 10px;
+}
+
+.medida-group input[type="number"]:focus,
+.cliente-container select:focus,
+.cliente-container input:focus,
+.additional-fields select:focus {
+    outline: none;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+    background-color: rgba(255, 255, 255, 0.9);
+}
+
+.medida-group input[type="checkbox"] {
+    width: 18px;
+    height: 18px;
+    margin-right: 8px;
+    flex-shrink: 0;
+    vertical-align: middle;
+    cursor: pointer;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+/* ... (o restante do código permanece o mesmo) ... */
+
+.medida-group input[placeholder="T"] {
+    flex: 1.5;
+}
+
+/* Estilos dos inputs numéricos */
+.medida-group input[type="number"] {
+    flex: 1;
+    min-width: 0;
+    padding: 10px;
+    font-size: 16px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 5px;
+    background-color: rgba(255, 255, 255, 0.8);
+    backdrop-filter: blur(5px);
+}
+
+.medida-group input[placeholder="T"] {
+    flex: 1.5;
+}
+
+/* Estilo da checkbox */
+.medida-group input[type="checkbox"] {
+    width: 18px;
+    height: 18px;
+    margin-right: 8px;
+    flex-shrink: 0;
+    vertical-align: middle;
+    cursor: pointer;
+}
+
+/* Estilos dos ícones de toggle e delete */
+.toggle-icon,
+.delete-button {
+    flex-shrink: 0;
+    width: 20px;
+    height: 20px;
+    background-color: rgba(33, 150, 243, 0.8);
+    color: white;
+    border: none;
+    border-radius: 50%;
+    font-size: 14px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    padding: 0;
+    line-height: 1;
+    transition: all 0.3s ease;
+}
+
+.delete-button {
+    background-color: rgba(244, 67, 54, 0.8);
+}
+
+.toggle-icon:hover,
+.delete-button:hover {
+    transform: scale(1.1);
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+}
+
+/* Estilo do resultado total */
+.resultado {
+    text-align: right;
+    margin-top: 20px;
+    font-size: 20px;
+    font-weight: bold;
+    color: #4CAF50;
+    background-color: rgba(255, 255, 255, 0.8);
+    padding: 10px;
+    border-radius: 5px;
+    backdrop-filter: blur(5px);
+}
+
+/* Estilos do container de botões */
+.button-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 20px;
+    flex-wrap: wrap;
+}
+
+/* Estilos dos botões principais */
+.add-button,
+.clear-button,
+.pdf-button {
+    color: white;
+    border: none;
+    padding: 15px 30px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 16px;
+    margin: 10px;
+    flex-grow: 1;
+    text-align: center;
+    transition: all 0.3s ease;
+    backdrop-filter: blur(5px);
+}
+
+.add-button {
+    background: rgba(76, 175, 80, 0.8);
+}
+
+.clear-button {
+    background: rgba(255, 87, 34, 0.8);
+}
+
+.pdf-button {
+    background: rgba(33, 150, 243, 0.8);
+}
+
+.add-button:hover,
+.clear-button:hover,
+.pdf-button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+    opacity: 1;
+}
+
+/* Estilos dos campos adicionais */
+.additional-fields {
+    display: none;
+    gap: 10px;
+}
+
+.additional-fields select {
+    flex: 1;
+    min-width: 0;
+    padding: 10px;
+    font-size: 16px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 5px;
+    background-color: rgba(255, 255, 255, 0.8);
+    backdrop-filter: blur(5px);
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+}
+
+/* Estilos para dispositivos móveis */
+@media (max-width: 600px) {
+    .container {
+        padding: 10px;
+        margin: 10px;
     }
-    
-        /* Estilo da checkbox */
-        .medida-group input[type="checkbox"] {
-            width: 18px;
-            height: 18px;
-            margin-right: 8px;
-            flex-shrink: 0;
-            vertical-align: middle;
-            cursor: pointer;
-        }
-    
-        /* Estilos dos ícones de toggle e delete */
-        .toggle-icon,
-        .delete-button {
-            flex-shrink: 0;
-            width: 20px; /* Reduzido para ícones menores */
-            height: 20px; /* Reduzido para ícones menores */
-            background-color: #2196F3;
-            color: white;
-            border: none;
-            border-radius: 50%;
-            font-size: 14px; /* Reduzido para ícones menores */
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            cursor: pointer;
-            padding: 0;
-            line-height: 1;
-        }
-    
-        .delete-button {
-            background-color: #f44336;
-        }
-    
-        /* Estilo do resultado total */
-        .resultado {
-            text-align: right;
-            margin-top: 20px;
-            font-size: 20px;
-            font-weight: bold;
-            color: #4CAF50;
-        }
-    
-        /* Estilos do container de botões */
-        .button-container {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-top: 20px;
-            flex-wrap: wrap;
-        }
-    
-        /* Estilos dos botões principais */
-        .add-button,
-        .clear-button,
-        .pdf-button {
-            color: white;
-            border: none;
-            padding: 15px 30px;
-            border-radius: 8px;
-            cursor: pointer;
-            font-size: 16px;
-            margin: 10px;
-            flex-grow: 1;
-            text-align: center;
-            transition: background 0.3s ease;
-        }
-    
-        .add-button {
-            background: linear-gradient(45deg, #4CAF50, #388E3C);
-        }
-    
-        .clear-button {
-            background: linear-gradient(45deg, #FF5722, #E64A19);
-        }
-    
-        .pdf-button {
-            background: linear-gradient(45deg, #2196F3, #1976D2);
-        }
-    
-        /* Estilos dos campos adicionais */
-        .additional-fields {
-            display: none;
-            gap: 10px;
-        }
-    
-        .additional-fields select {
-            flex: 1;
-            padding: 8px;
-            font-size: 14px;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-        }
-    
-        /* Estilos para dispositivos móveis */
-        @media (max-width: 600px) {
-            .container {
-                padding: 10px;
-                margin: 10px;
-            }
-    
-            .medida-group {
-                padding: 8px 5px;
-            }
-    
-            .medida-row {
-                flex-wrap: nowrap;
-            }
-    
-            .medida-group input[type="checkbox"] {
-                width: 16px;
-                height: 16px;
-                margin-right: 5px;
-            }
-    
-            .medida-group input[type="number"] {
-                padding: 8px; /* Ajustado para mobile */
-                font-size: 15px; /* Ajustado para mobile */
-            }
-    
-            .toggle-icon,
-            .delete-button {
-                width: 20px; /* Reduzido para mobile */
-                height: 20px; /* Reduzido para mobile */
-                font-size: 10px; /* Reduzido para mobile */
-            }
-    
-            .additional-fields {
-                flex-direction: column;
-            }
-    
-            .button-container {
-                flex-direction: column;
-            }
-    
-            .add-button,
-            .clear-button,
-            .pdf-button {
-                width: 100%;
-                margin: 5px 0;
-            }
-        }
+
+    .medida-group {
+        padding: 8px 5px;
+    }
+
+    .medida-row {
+        flex-wrap: nowrap;
+    }
+
+    .medida-group input[type="checkbox"] {
+        width: 16px;
+        height: 16px;
+        margin-right: 5px;
+    }
+
+    .medida-group input[type="number"] {
+        padding: 8px;
+        font-size: 15px;
+    }
+
+    .toggle-icon,
+    .delete-button {
+        width: 20px;
+        height: 20px;
+        font-size: 10px;
+    }
+
+    .additional-fields {
+        flex-direction: column;
+    }
+
+    .button-container {
+        flex-direction: column;
+    }
+
+    .add-button,
+    .clear-button,
+    .pdf-button {
+        width: 100%;
+        margin: 5px 0;
+    }
+}
     </style>
     
 </head>
@@ -255,6 +346,7 @@
             </select>
             <input type="text" id="novoClienteInput" placeholder="Novo cliente">
             <button onclick="adicionarCliente()">Adicionar Cliente</button>
+            <link rel="stylesheet" href="path/to/advanced-calculator-styles.css">
         </div>
         <div id="medidasContainer"></div>
         <div class="resultado" id="resultado">Total M²: 0,00</div>
@@ -266,7 +358,8 @@
     </div>
 
     <script>
-        const clientes = JSON.parse(localStorage.getItem('clientes')) || [];
+  
+      const clientes = JSON.parse(localStorage.getItem('clientes')) || [];
         const clienteSelect = document.getElementById('clienteSelect');
 
         function adicionarCliente() {
@@ -286,6 +379,13 @@
                 adicionarCliente();
             }
         });
+
+        function addMedidaGroup(/* ... */) {
+            // ... código existente ...
+            medidaGroup.classList.add('fadeIn');
+  // ... resto do código ...
+}
+   
 
         function carregarClientes(clienteSelecionado = '') {
             clienteSelect.innerHTML = '<option value="">Selecione um cliente</option>';
