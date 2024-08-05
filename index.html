@@ -8,7 +8,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script>
  
     <style>
-/* Importação de fonte */
+ /* Importação de fonte */
 @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&family=Montserrat:wght@600;700&display=swap');
 
 /* Estilos gerais do corpo da página */
@@ -16,23 +16,19 @@ body {
     font-family: 'Roboto', sans-serif;
     margin: 0;
     padding: 0;
-    background-image: url('https://source.unsplash.com/1920x1080/?architecture,window');
-    background-size: cover;
-    background-attachment: fixed;
-    background-position: center;
+    background-color: #f0f4f8;
     color: #333;
-    text-shadow: 1px 1px 1px rgba(255, 255, 255, 0.5);
 }
 
 /* Container principal */
 .container {
     max-width: 1000px;
     margin: 20px auto;
-    background-color: rgba(255, 255, 255, 0.7);
-    backdrop-filter: blur(10px);
+    background-color: rgba(255, 255, 255, 0.9);
     padding: 20px;
-    border-radius: 15px;
-    box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+    border-radius: 10px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+    backdrop-filter: blur(10px);
 }
 
 /* Estilos do cabeçalho */
@@ -44,9 +40,9 @@ body {
 .header h1 {
     font-family: 'Montserrat', sans-serif;
     font-size: 24px;
-    color: #1a1a1a;
+    color: #2c3e50;
     margin: 0;
-    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+    text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
 }
 
 /* Estilos do container de cliente */
@@ -62,59 +58,35 @@ body {
 .cliente-container button {
     padding: 10px;
     font-size: 16px;
-    border: 1px solid rgba(255, 255, 255, 0.2);
+    border: 1px solid #ccc;
     border-radius: 5px;
-    background-color: rgba(255, 255, 255, 0.8);
-    backdrop-filter: blur(5px);
+    background-color: #fff;
     transition: all 0.3s ease;
 }
 
 .cliente-container button {
-    background: rgba(76, 175, 80, 0.8);
+    background: #4CAF50;
     color: white;
     border: none;
     cursor: pointer;
-    transition: background 0.3s ease;
 }
 
 .cliente-container button:hover {
-    background: rgba(76, 175, 80, 1);
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    background: #45a049;
 }
 
 /* Estilos do grupo de medidas */
 .medida-group {
-    background-color: rgba(255, 255, 255, 0.5);
-    backdrop-filter: blur(5px);
-    border-radius: 10px;
+    background-color: #f9f9f9;
+    border-radius: 5px;
     padding: 10px;
     margin-bottom: 15px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
     transition: all 0.3s ease;
-    position: relative;
-    overflow: hidden;
 }
 
 .medida-group:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
-}
-
-.medida-group:first-child {
-    background-color: rgba(255, 255, 255, 0.8);
-    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
-}
-
-.medida-group::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 50%;
-    background: linear-gradient(to bottom, rgba(255, 255, 255, 0.15), transparent);
-    pointer-events: none;
-    border-radius: 10px 10px 0 0;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
 }
 
 .medida-row {
@@ -125,41 +97,14 @@ body {
     margin-bottom: 10px;
 }
 
-.medida-group input[type="number"]:focus,
-.cliente-container select:focus,
-.cliente-container input:focus,
-.additional-fields select:focus {
-    outline: none;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
-    background-color: rgba(255, 255, 255, 0.9);
-}
-
-.medida-group input[type="checkbox"] {
-    width: 18px;
-    height: 18px;
-    margin-right: 8px;
-    flex-shrink: 0;
-    vertical-align: middle;
-    cursor: pointer;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-}
-
-/* ... (o restante do código permanece o mesmo) ... */
-
-.medida-group input[placeholder="T"] {
-    flex: 1.5;
-}
-
 /* Estilos dos inputs numéricos */
 .medida-group input[type="number"] {
     flex: 1;
     min-width: 0;
     padding: 10px;
     font-size: 16px;
-    border: 1px solid rgba(255, 255, 255, 0.2);
+    border: 1px solid #ddd;
     border-radius: 5px;
-    background-color: rgba(255, 255, 255, 0.8);
-    backdrop-filter: blur(5px);
 }
 
 .medida-group input[placeholder="T"] {
@@ -182,7 +127,7 @@ body {
     flex-shrink: 0;
     width: 20px;
     height: 20px;
-    background-color: rgba(33, 150, 243, 0.8);
+    background-color: #2196F3;
     color: white;
     border: none;
     border-radius: 50%;
@@ -197,13 +142,12 @@ body {
 }
 
 .delete-button {
-    background-color: rgba(244, 67, 54, 0.8);
+    background-color: #f44336;
 }
 
 .toggle-icon:hover,
 .delete-button:hover {
     transform: scale(1.1);
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
 }
 
 /* Estilo do resultado total */
@@ -213,10 +157,6 @@ body {
     font-size: 20px;
     font-weight: bold;
     color: #4CAF50;
-    background-color: rgba(255, 255, 255, 0.8);
-    padding: 10px;
-    border-radius: 5px;
-    backdrop-filter: blur(5px);
 }
 
 /* Estilos do container de botões */
@@ -241,28 +181,25 @@ body {
     margin: 10px;
     flex-grow: 1;
     text-align: center;
-    transition: all 0.3s ease;
-    backdrop-filter: blur(5px);
+    transition: background 0.3s ease, transform 0.3s ease;
 }
 
 .add-button {
-    background: rgba(76, 175, 80, 0.8);
+    background: linear-gradient(45deg, #4CAF50, #388E3C);
 }
 
 .clear-button {
-    background: rgba(255, 87, 34, 0.8);
+    background: linear-gradient(45deg, #FF5722, #E64A19);
 }
 
 .pdf-button {
-    background: rgba(33, 150, 243, 0.8);
+    background: linear-gradient(45deg, #2196F3, #1976D2);
 }
 
 .add-button:hover,
 .clear-button:hover,
 .pdf-button:hover {
     transform: translateY(-2px);
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
-    opacity: 1;
 }
 
 /* Estilos dos campos adicionais */
@@ -273,15 +210,10 @@ body {
 
 .additional-fields select {
     flex: 1;
-    min-width: 0;
-    padding: 10px;
-    font-size: 16px;
-    border: 1px solid rgba(255, 255, 255, 0.2);
+    padding: 8px;
+    font-size: 14px;
+    border: 1px solid #ddd;
     border-radius: 5px;
-    background-color: rgba(255, 255, 255, 0.8);
-    backdrop-filter: blur(5px);
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-    transition: all 0.3s ease;
 }
 
 /* Estilos para dispositivos móveis */
@@ -383,7 +315,7 @@ body {
         function addMedidaGroup(/* ... */) {
             // ... código existente ...
             medidaGroup.classList.add('fadeIn');
-  // ... resto do código ...
+  ZZ// ... resto do código ...
 }
    
 
