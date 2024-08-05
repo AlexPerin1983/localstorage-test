@@ -36,6 +36,16 @@
             margin: 0;
         }
 
+        .cliente-container {
+            margin-bottom: 20px;
+        }
+
+        .cliente-container select, .cliente-container input {
+            padding: 10px;
+            font-size: 16px;
+            margin-right: 10px;
+        }
+
         .medida-group {
             display: flex;
             flex-direction: column;
@@ -206,6 +216,13 @@
         <div class="header">
             <h1>Calculadora de M²</h1>
         </div>
+        <div class="cliente-container">
+            <select id="clienteSelect" onchange="loadMedidas()">
+                <option value="">Selecione um cliente</option>
+            </select>
+            <input type="text" id="novoClienteInput" placeholder="Novo cliente">
+            <button onclick="adicionarCliente()">Adicionar Cliente</button>
+        </div>
         <div id="medidasContainer"></div>
         <div class="resultado" id="resultado">Total M²: 0,00</div>
         <div class="button-container">
@@ -216,6 +233,31 @@
     </div>
 
     <script>
+        const clientes = JSON.parse(localStorage.getItem('clientes')) || [];
+        const clienteSelect = document.getElementById('clienteSelect');
+
+        function adicionarCliente() {
+            const novoClienteInput = document.getElementById('novoClienteInput');
+            const novoCliente = novoClienteInput.value.trim();
+
+            if (novoCliente && !clientes.includes(novoCliente)) {
+                clientes.push(novoCliente);
+                localStorage.setItem('clientes', JSON.stringify(clientes));
+                carregarClientes();
+                novoClienteInput.value = '';
+            }
+        }
+
+        function carregarClientes() {
+            clienteSelect.innerHTML = '<option value="">Selecione um cliente</option>';
+            clientes.forEach(cliente => {
+                const option = document.createElement('option');
+                option.value = cliente;
+                option.textContent = cliente;
+                clienteSelect.appendChild(option);
+            });
+        }
+
         function addMedidaGroup(largura = '', altura = '', quantidade = 1, isChecked = true, ambiente = '', tipoAplicacao = '') {
             const container = document.getElementById('medidasContainer');
             const lastGroup = container.lastElementChild;
@@ -368,6 +410,12 @@
 
         function saveMedidas() {
             try {
+                const cliente = clienteSelect.value;
+                if (!cliente) {
+                    alert('Selecione um cliente.');
+                    return;
+                }
+
                 const medidaGroups = document.querySelectorAll('.medida-group');
                 const medidas = Array.from(medidaGroups).map(group => {
                     const isChecked = group.querySelector('input[type="checkbox"]').checked;
@@ -378,7 +426,7 @@
                     const tipoAplicacao = group.querySelector('.additional-fields select:nth-child(2)').value;
                     return { isChecked, largura, altura, quantidade, ambiente, tipoAplicacao };
                 });
-                localStorage.setItem('medidas', JSON.stringify(medidas));
+                localStorage.setItem(`medidas_${cliente}`, JSON.stringify(medidas));
                 console.log('Medidas salvas com sucesso.');
             } catch (e) {
                 console.error('Erro ao salvar medidas:', e);
@@ -387,7 +435,11 @@
 
         function loadMedidas() {
             try {
-                const savedMedidas = localStorage.getItem('medidas');
+                const cliente = clienteSelect.value;
+                const savedMedidas = localStorage.getItem(`medidas_${cliente}`);
+                const medidasContainer = document.getElementById('medidasContainer');
+                medidasContainer.innerHTML = '';
+
                 if (savedMedidas) {
                     const medidas = JSON.parse(savedMedidas);
                     medidas.forEach(medida => {
@@ -396,16 +448,21 @@
                 } else {
                     addMedidaGroup();
                 }
+                calculateTotal();
                 console.log('Medidas carregadas com sucesso.');
             } catch (e) {
                 console.error('Erro ao carregar medidas:', e);
-                addMedidaGroup();
             }
         }
 
         function clearMedidas() {
             try {
-                localStorage.removeItem('medidas');
+                const cliente = clienteSelect.value;
+                if (!cliente) {
+                    alert('Selecione um cliente.');
+                    return;
+                }
+                localStorage.removeItem(`medidas_${cliente}`);
                 document.getElementById('medidasContainer').innerHTML = '';
                 addMedidaGroup();
                 calculateTotal();
@@ -422,6 +479,12 @@
         }
 
         function generatePDF() {
+            const cliente = clienteSelect.value;
+            if (!cliente) {
+                alert('Selecione um cliente.');
+                return;
+            }
+
             const { jsPDF } = window.jspdf;
             const doc = new jsPDF('p', 'mm', 'a4');
             const pageHeight = doc.internal.pageSize.height;
@@ -430,7 +493,7 @@
             let page = 1;
 
             doc.setFontSize(18);
-            doc.text("Orçamento de Medidas", 10, 10);
+            doc.text(`Orçamento de Medidas - Cliente: ${cliente}`, 10, 10);
 
             const medidaGroups = document.querySelectorAll('.medida-group');
 
@@ -440,7 +503,7 @@
                     y = 20;
                     page += 1;
                     doc.setFontSize(18);
-                    doc.text("Orçamento de Medidas - Página " + page, 10, 10);
+                    doc.text(`Orçamento de Medidas - Cliente: ${cliente} - Página ${page}`, 10, 10);
                 }
 
                 const isChecked = group.querySelector('input[type="checkbox"]').checked ? "Sim" : "Não";
@@ -464,10 +527,16 @@
                 y += 80;
             });
 
-            doc.save('orcamento_medidas.pdf');
+            doc.save(`orcamento_medidas_${cliente}.pdf`);
         }
 
-        window.onload = loadMedidas;
+        window.onload = () => {
+            carregarClientes();
+            if (clientes.length > 0) {
+                clienteSelect.value = clientes[0];
+                loadMedidas();
+            }
+        };
     </script>
 </body>
 </html>
