@@ -523,44 +523,159 @@
             const { jsPDF } = window.jspdf;
             const doc = new jsPDF('p', 'mm', 'a4');
             const pageHeight = doc.internal.pageSize.height;
+            const pageWidth = doc.internal.pageSize.width;
+            const margin = 20;
             const lineHeight = 10;
-            let y = 20;
+            let y = 40;
             let page = 1;
 
+            const date = new Date();
+            const formattedDate = date.toLocaleDateString();
+            const formattedTime = date.toLocaleTimeString();
+
+            // Cabeçalho
             doc.setFontSize(18);
-            doc.text(`Orçamento de Medidas - Cliente: ${cliente}`, 10, 10);
+            doc.setTextColor(0, 0, 0);
+            doc.text(`Nome: ${cliente}`, margin, 20);
+
+            doc.setFontSize(12);
+            doc.text(`Data: ${formattedDate}`, pageWidth - margin, 20, { align: 'right' });
+            doc.text(`Hora: ${formattedTime}`, pageWidth - margin, 25, { align: 'right' });
+            doc.text(`Página: ${page}`, pageWidth - margin, 30, { align: 'right' });
+
+            // Título Medidas
+            doc.setFontSize(16);
+            doc.setFillColor(220, 220, 220); // Cor de fundo cinza
+            doc.rect(margin, y, pageWidth - 2 * margin, 10, 'F');
+            doc.setTextColor(0, 0, 0);
+            doc.text('Medidas', margin + 2, y + 7);
+            y += 15;
 
             const medidaGroups = document.querySelectorAll('.medida-group');
 
-            medidaGroups.forEach(group => {
-                if (y + lineHeight * 7 > pageHeight) {
+            for (let i = 0; i < medidaGroups.length; i += 2) {
+                const group1 = medidaGroups[i];
+                const group2 = medidaGroups[i + 1];
+
+                if (y + lineHeight * 6 > pageHeight) {
                     doc.addPage();
-                    y = 20;
+                    y = 40;
                     page += 1;
+
                     doc.setFontSize(18);
-                    doc.text(`Orçamento de Medidas - Cliente: ${cliente} - Página ${page}`, 10, 10);
+                    doc.setTextColor(0, 0, 0);
+                    doc.text(`Nome: ${cliente}`, margin, 20);
+
+                    doc.setFontSize(12);
+                    doc.text(`Data: ${formattedDate}`, pageWidth - margin, 20, { align: 'right' });
+                    doc.text(`Hora: ${formattedTime}`, pageWidth - margin, 25, { align: 'right' });
+                    doc.text(`Página: ${page}`, pageWidth - margin, 30, { align: 'right' });
+
+                    doc.setFontSize(16);
+                    doc.setFillColor(220, 220, 220); // Cor de fundo cinza
+                    doc.rect(margin, y, pageWidth - 2 * margin, 10, 'F');
+                    doc.setTextColor(0, 0, 0);
+                    doc.text('Medidas', margin + 2, y + 7);
+                    y += 15;
                 }
 
-                const isChecked = group.querySelector('input[type="checkbox"]').checked ? "Sim" : "Não";
-                const largura = group.querySelector('input[placeholder="Larg"]').value;
-                const altura = group.querySelector('input[placeholder="Alt"]').value;
-                const quantidade = group.querySelector('input[placeholder="Qtd"]').value;
-                const totalM2 = group.querySelector('input[placeholder="Tm²"]').value;
-                const ambiente = group.querySelector('.additional-fields select:nth-child(1)').value;
-                const tipoAplicacao = group.querySelector('.additional-fields select:nth-child(2)').value;
+                const isChecked1 = group1.querySelector('input[type="checkbox"]').checked ? "Sim" : "Não";
+                const largura1 = group1.querySelector('input[placeholder="Larg"]').value;
+                const altura1 = group1.querySelector('input[placeholder="Alt"]').value;
+                const quantidade1 = group1.querySelector('input[placeholder="Qtd"]').value;
+                const totalM21 = group1.querySelector('input[placeholder="Tm²"]').value;
+                const ambiente1 = group1.querySelector('.additional-fields select:nth-child(1)').value;
+                const tipoAplicacao1 = group1.querySelector('.additional-fields select:nth-child(2)').value;
 
+                const isChecked2 = group2 ? group2.querySelector('input[type="checkbox"]').checked ? "Sim" : "Não" : "";
+                const largura2 = group2 ? group2.querySelector('input[placeholder="Larg"]').value : "";
+                const altura2 = group2 ? group2.querySelector('input[placeholder="Alt"]').value : "";
+                const quantidade2 = group2 ? group2.querySelector('input[placeholder="Qtd"]').value : "";
+                const totalM22 = group2 ? group2.querySelector('input[placeholder="Tm²"]').value : "";
+                const ambiente2 = group2 ? group2.querySelector('.additional-fields select:nth-child(1)').value : "";
+                const tipoAplicacao2 = group2 ? group2.querySelector('.additional-fields select:nth-child(2)').value : "";
+
+                // Bloco de Medidas
+                doc.setFontSize(14);
+                doc.setFillColor(220, 220, 220); // Cor de fundo cinza
+                doc.rect(margin, y, (pageWidth - 3 * margin) / 2, 10, 'F');
+                doc.rect(margin + (pageWidth - 3 * margin) / 2 + margin, y, (pageWidth - 3 * margin) / 2, 10, 'F');
+                doc.setTextColor(0, 0, 0);
+                doc.text(`Medida ${i + 1}`, margin + 2, y + 7);
+                if (group2) {
+                    doc.text(`Medida ${i + 2}`, margin + (pageWidth - 3 * margin) / 2 + margin + 2, y + 7);
+                }
+                y += 15;
+
+                // Dados da Medida
                 doc.setFontSize(12);
-                doc.text(`Medida:`, 10, y);
-                doc.text(`  Largura: ${largura}`, 20, y + 10);
-                doc.text(`  Altura: ${altura}`, 20, y + 20);
-                doc.text(`  Quantidade: ${quantidade}`, 20, y + 30);
-                doc.text(`  Total M²: ${totalM2}`, 20, y + 40);
-                doc.text(`  Ambiente: ${ambiente}`, 20, y + 50);
-                doc.text(`  Tipo de Aplicação: ${tipoAplicacao}`, 20, y + 60);
-                doc.text(`  Incluído: ${isChecked}`, 20, y + 70);
+                doc.setTextColor(100, 100, 100); // Cinza
 
-                y += 80;
-            });
+                let linhaY = y;
+
+                if (largura1) {
+                    doc.text(`Largura: ${largura1}`, margin + 2, linhaY);
+                    linhaY += 5;
+                }
+                if (altura1) {
+                    doc.text(`Altura: ${altura1}`, margin + 2, linhaY);
+                    linhaY += 5;
+                }
+                if (quantidade1) {
+                    doc.text(`Quantidade: ${quantidade1}`, margin + 2, linhaY);
+                    linhaY += 5;
+                }
+                if (totalM21) {
+                    doc.text(`Total M²: ${totalM21}`, margin + 2, linhaY);
+                    linhaY += 5;
+                }
+                if (ambiente1) {
+                    doc.text(`Ambiente: ${ambiente1}`, margin + 2, linhaY);
+                    linhaY += 5;
+                }
+                if (tipoAplicacao1) {
+                    doc.text(`Tipo de Aplicação: ${tipoAplicacao1}`, margin + 2, linhaY);
+                    linhaY += 5;
+                }
+                doc.text(`Incluído: ${isChecked1}`, margin + 2, linhaY);
+
+                if (group2) {
+                    linhaY = y;
+
+                    if (largura2) {
+                        doc.text(`Largura: ${largura2}`, margin + (pageWidth - 3 * margin) / 2 + margin + 2, linhaY);
+                        linhaY += 5;
+                    }
+                    if (altura2) {
+                        doc.text(`Altura: ${altura2}`, margin + (pageWidth - 3 * margin) / 2 + margin + 2, linhaY);
+                        linhaY += 5;
+                    }
+                    if (quantidade2) {
+                        doc.text(`Quantidade: ${quantidade2}`, margin + (pageWidth - 3 * margin) / 2 + margin + 2, linhaY);
+                        linhaY += 5;
+                    }
+                    if (totalM22) {
+                        doc.text(`Total M²: ${totalM22}`, margin + (pageWidth - 3 * margin) / 2 + margin + 2, linhaY);
+                        linhaY += 5;
+                    }
+                    if (ambiente2) {
+                        doc.text(`Ambiente: ${ambiente2}`, margin + (pageWidth - 3 * margin) / 2 + margin + 2, linhaY);
+                        linhaY += 5;
+                    }
+                    if (tipoAplicacao2) {
+                        doc.text(`Tipo de Aplicação: ${tipoAplicacao2}`, margin + (pageWidth - 3 * margin) / 2 + margin + 2, linhaY);
+                        linhaY += 5;
+                    }
+                    doc.text(`Incluído: ${isChecked2}`, margin + (pageWidth - 3 * margin) / 2 + margin + 2, linhaY);
+                }
+
+                y += 35;
+            }
+
+            // Paginação no rodapé
+            doc.setFontSize(10);
+            doc.setTextColor(100, 100, 100); // Cinza
+            doc.text(`Página ${page}`, pageWidth / 2, pageHeight - 10, { align: 'center' });
 
             doc.save(`orcamento_medidas_${cliente}.pdf`);
         }
