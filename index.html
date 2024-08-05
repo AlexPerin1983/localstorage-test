@@ -26,7 +26,7 @@
 
         .header {
             text-align: center;
-            margin-bottom: 10px;
+            margin-bottom: 20px;
         }
 
         .header h1 {
@@ -37,13 +37,34 @@
         }
 
         .cliente-container {
+            display: flex;
+            align-items: center;
             margin-bottom: 20px;
+            gap: 10px;
         }
 
-        .cliente-container select, .cliente-container input {
+        .cliente-container select,
+        .cliente-container input {
             padding: 10px;
             font-size: 16px;
-            margin-right: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            flex-grow: 1;
+        }
+
+        .cliente-container button {
+            padding: 10px 20px;
+            font-size: 16px;
+            background: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+
+        .cliente-container button:hover {
+            background: #388E3C;
         }
 
         .medida-group {
@@ -60,7 +81,8 @@
             margin-bottom: 0;
         }
 
-        .medida-group input, .medida-group select {
+        .medida-group input,
+        .medida-group select {
             padding: 8px;
             border: 1px solid #ccc;
             border-radius: 5px;
@@ -80,7 +102,8 @@
             border-color: #ff0000;
         }
 
-        .medida-group input.disabled, .medida-group select.disabled {
+        .medida-group input.disabled,
+        .medida-group select.disabled {
             opacity: 0.5;
         }
 
@@ -104,7 +127,9 @@
             flex-wrap: wrap;
         }
 
-        .add-button, .clear-button, .pdf-button {
+        .add-button,
+        .clear-button,
+        .pdf-button {
             background: linear-gradient(45deg, #4CAF50, #388E3C);
             color: white;
             border: none;
@@ -165,16 +190,24 @@
                 padding: 20px;
             }
 
+            .cliente-container {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
             .button-container {
                 flex-direction: column;
             }
 
-            .add-button, .clear-button, .pdf-button {
+            .add-button,
+            .clear-button,
+            .pdf-button {
                 width: 100%;
                 margin: 10px 0;
             }
 
-            .medida-group input, .medida-group select {
+            .medida-group input,
+            .medida-group select {
                 width: auto;
                 margin-right: 0;
                 margin-bottom: 0;
@@ -189,13 +222,15 @@
                 gap: 0;
             }
 
-            .medida-row input[type="checkbox"], .medida-row .toggle-icon {
+            .medida-row input[type="checkbox"],
+            .medida-row .toggle-icon {
                 width: auto;
                 margin-right: 0;
                 padding: 0;
             }
 
-            .medida-row input[type="number"], .medida-row input[type="checkbox"] {
+            .medida-row input[type="number"],
+            .medida-row input[type="checkbox"] {
                 margin: 0;
                 padding: 8px;
             }
