@@ -305,23 +305,23 @@
         }
 
         function addMedidaGroup(isFirst, largura = '', altura = '', quantidade = 1, isChecked = true, ambiente = '', tipoAplicacao = '') {
-            const container = document.getElementById('medidasContainer');
-            const medidaGroup = document.createElement('div');
-            medidaGroup.classList.add('medida-group');
-            
-            medidaGroup.innerHTML = `
-                <div class="medida-row">
-                    <input type="checkbox" ${isChecked ? 'checked' : ''} onchange="toggleInputs(this)">
-                    <input type="number" placeholder="L" value="${largura}" class="largura-input" oninput="calculateTotal()">
-                    <input type="number" placeholder="A" value="${altura}" oninput="calculateTotal()">
-                    <input type="number" placeholder="Q" value="${quantidade}" oninput="calculateTotal()">
-                    <input type="number" placeholder="T" disabled>
-                    <button class="toggle-icon" onclick="toggleAdditionalFields(this)">▼</button>
-                    <button class="delete-button" onclick="deleteMedidaGroup(this)">×</button>
-                </div>
-                <div class="additional-fields">
-                    <select onchange="calculateTotal()">
-                       <option value="">Ambiente</option>
+    const container = document.getElementById('medidasContainer');
+    const medidaGroup = document.createElement('div');
+    medidaGroup.classList.add('medida-group');
+    
+    medidaGroup.innerHTML = `
+        <div class="medida-row">
+            <input type="checkbox" ${isChecked ? 'checked' : ''} onchange="toggleInputs(this)">
+            <input type="number" inputmode="decimal" placeholder="L" value="${largura}" class="largura-input" oninput="calculateTotal()">
+            <input type="number" inputmode="decimal" placeholder="A" value="${altura}" class="altura-input" oninput="calculateTotal()">
+            <input type="number" inputmode="numeric" placeholder="Q" value="${quantidade}" class="quantidade-input" oninput="calculateTotal()">
+            <input type="number" placeholder="T" disabled>
+            <button class="toggle-icon" onclick="toggleAdditionalFields(this)">▼</button>
+            <button class="delete-button" onclick="deleteMedidaGroup(this)">×</button>
+        </div>
+        <div class="additional-fields">
+            <select onchange="calculateTotal()">
+                <option value="">Ambiente</option>
                         <option value="Sala de estar">Sala de estar</option>
                         <option value="Sala de jantar">Sala de jantar</option>
                         <option value="Cozinha">Cozinha</option>
@@ -374,30 +374,49 @@
 
             container.appendChild(medidaGroup);
 
-            // Foca no primeiro input de largura se for a primeira medida
-            if (isFirst) {
-                const larguraInput = medidaGroup.querySelector('.largura-input');
-                if (larguraInput) {
-                    larguraInput.focus();
+const inputs = medidaGroup.querySelectorAll('input[type="number"]');
+inputs.forEach((input, index) => {
+    input.addEventListener('keydown', function(e) {
+        if (e.key === 'Enter') {
+            e.preventDefault();
+            if (index < inputs.length - 2) { // -2 porque o último input é desabilitado
+                inputs[index + 1].focus();
+            } else {
+                // Adiciona novo grupo ou foca no próximo
+                const nextGroup = medidaGroup.nextElementSibling;
+                if (nextGroup) {
+                    nextGroup.querySelector('.largura-input').focus();
+                } else {
+                    addMedidaGroup(true);
                 }
             }
+        }
+    });
 
-            const selects = medidaGroup.querySelectorAll('select');
-            if (selects.length > 0) {
-                selects[0].value = ambiente;
-                selects[1].value = tipoAplicacao;
+    // Adiciona comportamento para dispositivos móveis
+    input.addEventListener('input', function() {
+        if (this.value.length >= 2) { // Muda o foco após 2 dígitos
+            const nextInput = this.nextElementSibling;
+            if (nextInput && nextInput.tagName === 'INPUT' && !nextInput.disabled) {
+                nextInput.focus();
             }
-
-            calculateTotal();
         }
+    });
+});
 
-        function toggleInputs(checkbox) {
-            const inputs = checkbox.closest('.medida-row').querySelectorAll('input[type="number"]');
-            inputs.forEach(input => {
-                input.disabled = !checkbox.checked;
-            });
-            calculateTotal();
-        }
+// Foca no primeiro input de largura se for a primeira medida
+if (isFirst) {
+    medidaGroup.querySelector('.largura-input').focus();
+}
+
+const selects = medidaGroup.querySelectorAll('select');
+if (selects.length > 0) {
+    selects[0].value = ambiente;
+    selects[1].value = tipoAplicacao;
+}
+
+calculateTotal();
+}
 
         function toggleAdditionalFields(button) {
             const fields = button.closest('.medida-group').querySelector('.additional-fields');
