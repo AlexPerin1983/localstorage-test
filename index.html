@@ -259,7 +259,7 @@
         <div id="medidasContainer"></div>
         <div class="resultado" id="resultado">Total M²: 0,00</div>
         <div class="button-container">
-            <button class="add-button" onclick="addMedidaGroup()">Adicionar Medida</button>
+            <button class="add-button" onclick="addMedidaGroup(true)">Adicionar Medida</button>
             <button class="clear-button" onclick="confirmClearMedidas()">Apagar Cliente</button>
             <button class="pdf-button" onclick="generatePDF()">Gerar PDF</button>
         </div>
@@ -304,15 +304,15 @@
             }
         }
 
-        function addMedidaGroup(largura = '', altura = '', quantidade = 1, isChecked = true, ambiente = '', tipoAplicacao = '') {
+        function addMedidaGroup(isFirst, largura = '', altura = '', quantidade = 1, isChecked = true, ambiente = '', tipoAplicacao = '') {
             const container = document.getElementById('medidasContainer');
             const medidaGroup = document.createElement('div');
             medidaGroup.classList.add('medida-group');
-
+            
             medidaGroup.innerHTML = `
                 <div class="medida-row">
                     <input type="checkbox" ${isChecked ? 'checked' : ''} onchange="toggleInputs(this)">
-                    <input type="number" placeholder="L" value="${largura}" oninput="calculateTotal()">
+                    <input type="number" placeholder="L" value="${largura}" class="largura-input" oninput="calculateTotal()">
                     <input type="number" placeholder="A" value="${altura}" oninput="calculateTotal()">
                     <input type="number" placeholder="Q" value="${quantidade}" oninput="calculateTotal()">
                     <input type="number" placeholder="T" disabled>
@@ -373,6 +373,14 @@
             `;
 
             container.appendChild(medidaGroup);
+
+            // Foca no primeiro input de largura se for a primeira medida
+            if (isFirst) {
+                const larguraInput = medidaGroup.querySelector('.largura-input');
+                if (larguraInput) {
+                    larguraInput.focus();
+                }
+            }
 
             const selects = medidaGroup.querySelectorAll('select');
             if (selects.length > 0) {
@@ -458,12 +466,12 @@
             medidasContainer.innerHTML = '';
 
             if (savedMedidas) {
-        const medidas = JSON.parse(savedMedidas);
-        medidas.forEach(medida => {
-            addMedidaGroup(medida.largura, medida.altura, medida.quantidade, medida.isChecked, medida.ambiente, medida.tipoAplicacao);
+                const medidas = JSON.parse(savedMedidas);
+                medidas.forEach(medida => {
+                    addMedidaGroup(false, medida.largura, medida.altura, medida.quantidade, medida.isChecked, medida.ambiente, medida.tipoAplicacao);
                 });
             } else {
-                addMedidaGroup();
+                addMedidaGroup(true);
             }
             calculateTotal();
         }
@@ -484,7 +492,7 @@
             
             carregarClientes();
             document.getElementById('medidasContainer').innerHTML = '';
-            addMedidaGroup();
+            addMedidaGroup(true);
             calculateTotal();
         }
 
@@ -589,6 +597,31 @@
         window.onload = () => {
             carregarClientes();
         };
+
+        function scrollToButton() {
+            const button = document.querySelector('.add-button');
+            if (button) {
+                button.scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'end'
+                });
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const inputs = document.querySelectorAll('.medida-group input[type="number"]');
+            
+            inputs.forEach(input => {
+                input.addEventListener('focus', () => {
+                    setTimeout(() => {
+                        window.scrollTo({
+                            top: document.body.scrollHeight,
+                            behavior: 'smooth'
+                        });
+                    }, 300);
+                });
+            });
+        });
     </script>
 </body>
 </html>
