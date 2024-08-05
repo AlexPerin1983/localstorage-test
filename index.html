@@ -6,7 +6,9 @@
     <title>Calculadora de M²</title>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&family=Montserrat:wght@700&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script>
+ 
     <style>
+        /* Estilos gerais do corpo da página */
         body {
             font-family: 'Roboto', sans-serif;
             margin: 0;
@@ -14,103 +16,124 @@
             background-color: #f7f8fc;
             color: #333;
         }
-
+    
+        /* Container principal */
         .container {
-            max-width: 800px;
-            margin: 40px auto;
+            max-width: 1000px;
+            margin: 20px auto;
             background-color: #fff;
-            padding: 30px;
+            padding: 20px;
             border-radius: 10px;
             box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
         }
-
+    
+        /* Estilos do cabeçalho */
         .header {
             text-align: center;
             margin-bottom: 20px;
         }
-
+    
         .header h1 {
             font-family: 'Montserrat', sans-serif;
-            font-size: 28px;
+            font-size: 24px;
             color: #4CAF50;
             margin: 0;
         }
-
+    
+        /* Estilos do container de cliente */
         .cliente-container {
             display: flex;
-            align-items: center;
-            margin-bottom: 20px;
+            flex-direction: column;
             gap: 10px;
+            margin-bottom: 20px;
         }
-
+    
         .cliente-container select,
-        .cliente-container input {
+        .cliente-container input,
+        .cliente-container button {
             padding: 10px;
             font-size: 16px;
             border: 1px solid #ccc;
             border-radius: 5px;
-            flex-grow: 1;
         }
-
+    
         .cliente-container button {
-            padding: 10px 20px;
-            font-size: 16px;
             background: #4CAF50;
             color: white;
             border: none;
-            border-radius: 5px;
             cursor: pointer;
             transition: background 0.3s ease;
         }
-
+    
         .cliente-container button:hover {
             background: #388E3C;
         }
-
+    
+        /* Estilos do grupo de medidas */
         .medida-group {
-            display: flex;
-            flex-direction: column;
+            background-color: #f9f9f9;
+            border-radius: 5px;
+            padding: 10px;
             margin-bottom: 15px;
-            padding: 10px 0;
-            border-bottom: 1px solid #ddd;
         }
-
+    
         .medida-row {
             display: flex;
             align-items: center;
-            margin-bottom: 0;
+            justify-content: space-between;
+            gap: 5px;
+            margin-bottom: 10px;
         }
-
-        .medida-group input,
-        .medida-group select {
-            padding: 8px;
-            border: 1px solid #ccc;
+    
+        /* Estilos dos inputs numéricos */
+        .medida-group input[type="number"] {
+            flex: 1;
+            min-width: 0;
+            padding: 10px; /* Aumentado para inputs maiores */
+            font-size: 16px; /* Aumentado para texto mais legível */
+            border: 1px solid #ddd;
             border-radius: 5px;
-            font-size: 14px;
-            flex: 1 1 60px;
-            box-sizing: border-box;
-            min-width: 60px;
         }
 
+         /* Novo estilo para o input Total m² */
+    .medida-group input[placeholder="T"] {
+        flex: 1.5; /* Faz este input 50% mais largo que os outros */
+    }
+    
+        /* Estilo da checkbox */
         .medida-group input[type="checkbox"] {
-            width: 30px;
+            width: 18px;
+            height: 18px;
+            margin-right: 8px;
             flex-shrink: 0;
-            margin-right: 10px;
+            vertical-align: middle;
+            cursor: pointer;
         }
-
-        .medida-group input.invalid {
-            border-color: #ff0000;
+    
+        /* Estilos dos ícones de toggle e delete */
+        .toggle-icon,
+        .delete-button {
+            flex-shrink: 0;
+            width: 20px; /* Reduzido para ícones menores */
+            height: 20px; /* Reduzido para ícones menores */
+            background-color: #2196F3;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            font-size: 14px; /* Reduzido para ícones menores */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            padding: 0;
+            line-height: 1;
         }
-
-        .medida-group input.disabled,
-        .medida-group select.disabled {
-            opacity: 0.5;
+    
+        .delete-button {
+            background-color: #f44336;
         }
-
-        .medida-group .hidden {
-            display: none;
-        }
-
+    
+        /* Estilo do resultado total */
         .resultado {
             text-align: right;
             margin-top: 20px;
@@ -118,7 +141,8 @@
             font-weight: bold;
             color: #4CAF50;
         }
-
+    
+        /* Estilos do container de botões */
         .button-container {
             display: flex;
             justify-content: space-between;
@@ -126,11 +150,11 @@
             margin-top: 20px;
             flex-wrap: wrap;
         }
-
+    
+        /* Estilos dos botões principais */
         .add-button,
         .clear-button,
         .pdf-button {
-            background: linear-gradient(45deg, #4CAF50, #388E3C);
             color: white;
             border: none;
             padding: 15px 30px;
@@ -142,109 +166,83 @@
             text-align: center;
             transition: background 0.3s ease;
         }
-
-        .add-button:hover {
-            background: linear-gradient(45deg, #388E3C, #4CAF50);
+    
+        .add-button {
+            background: linear-gradient(45deg, #4CAF50, #388E3C);
         }
-
+    
         .clear-button {
             background: linear-gradient(45deg, #FF5722, #E64A19);
         }
-
-        .clear-button:hover {
-            background: linear-gradient(45deg, #E64A19, #FF5722);
-        }
-
+    
         .pdf-button {
             background: linear-gradient(45deg, #2196F3, #1976D2);
         }
-
-        .pdf-button:hover {
-            background: linear-gradient(45deg, #1976D2, #2196F3);
-        }
-
-        .toggle-icon {
-            cursor: pointer;
-            font-size: 18px;
-            color: #4CAF50;
-            margin-left: 10px;
-        }
-
+    
+        /* Estilos dos campos adicionais */
         .additional-fields {
             display: flex;
-            width: 100%;
-            justify-content: space-between;
-            flex-wrap: wrap;
-            margin-top: 10px;
-            transition: all 0.3s ease;
+            gap: 10px;
         }
-
+    
         .additional-fields select {
-            flex: 1 1 45%;
-            margin-top: 5px;
+            flex: 1;
+            padding: 8px;
+            font-size: 14px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
         }
-
+    
+        /* Estilos para dispositivos móveis */
         @media (max-width: 600px) {
             .container {
-                max-width: 100%;
-                padding: 20px;
+                padding: 10px;
+                margin: 10px;
             }
-
-            .cliente-container {
+    
+            .medida-group {
+                padding: 8px 5px;
+            }
+    
+            .medida-row {
+                flex-wrap: nowrap;
+            }
+    
+            .medida-group input[type="checkbox"] {
+                width: 16px;
+                height: 16px;
+                margin-right: 5px;
+            }
+    
+            .medida-group input[type="number"] {
+                padding: 6px; /* Ajustado para mobile */
+                font-size: 14px; /* Ajustado para mobile */
+            }
+    
+            .toggle-icon,
+            .delete-button {
+                width: 22px; /* Reduzido para mobile */
+                height: 22px; /* Reduzido para mobile */
+                font-size: 11px; /* Reduzido para mobile */
+            }
+    
+            .additional-fields {
                 flex-direction: column;
-                align-items: stretch;
             }
-
+    
             .button-container {
                 flex-direction: column;
             }
-
+    
             .add-button,
             .clear-button,
             .pdf-button {
                 width: 100%;
-                margin: 10px 0;
-            }
-
-            .medida-group input,
-            .medida-group select {
-                width: auto;
-                margin-right: 0;
-                margin-bottom: 0;
-                padding: 8px;
-                border-radius: 0;
-            }
-
-            .medida-row {
-                flex-direction: row;
-                align-items: center;
-                flex-wrap: nowrap;
-                gap: 0;
-            }
-
-            .medida-row input[type="checkbox"],
-            .medida-row .toggle-icon {
-                width: auto;
-                margin-right: 0;
-                padding: 0;
-            }
-
-            .medida-row input[type="number"],
-            .medida-row input[type="checkbox"] {
-                margin: 0;
-                padding: 8px;
-            }
-
-            .medida-row input[type="checkbox"] {
-                margin-right: -1px;
-                padding: 0;
-            }
-
-            .medida-row input {
-                margin-right: -1px;
+                margin: 5px 0;
             }
         }
     </style>
+    
 </head>
 <body>
     <div class="container">
@@ -262,7 +260,7 @@
         <div class="resultado" id="resultado">Total M²: 0,00</div>
         <div class="button-container">
             <button class="add-button" onclick="addMedidaGroup()">Adicionar Medida</button>
-            <button class="clear-button" onclick="confirmClearMedidas()">Novo Orçamento</button>
+            <button class="clear-button" onclick="confirmClearMedidas()">Apagar Cliente</button>
             <button class="pdf-button" onclick="generatePDF()">Gerar PDF</button>
         </div>
     </div>
@@ -278,12 +276,18 @@
             if (novoCliente && !clientes.includes(novoCliente)) {
                 clientes.push(novoCliente);
                 localStorage.setItem('clientes', JSON.stringify(clientes));
-                carregarClientes();
+                carregarClientes(novoCliente);
                 novoClienteInput.value = '';
             }
         }
 
-        function carregarClientes() {
+        document.getElementById('novoClienteInput').addEventListener('keyup', function(event) {
+            if (event.key === 'Enter') {
+                adicionarCliente();
+            }
+        });
+
+        function carregarClientes(clienteSelecionado = '') {
             clienteSelect.innerHTML = '<option value="">Selecione um cliente</option>';
             clientes.forEach(cliente => {
                 const option = document.createElement('option');
@@ -291,78 +295,45 @@
                 option.textContent = cliente;
                 clienteSelect.appendChild(option);
             });
+            if (clienteSelecionado) {
+                clienteSelect.value = clienteSelecionado;
+                loadMedidas();
+            } else if (clientes.length > 0) {
+                clienteSelect.value = clientes[clientes.length - 1];
+                loadMedidas();
+            }
         }
 
         function addMedidaGroup(largura = '', altura = '', quantidade = 1, isChecked = true, ambiente = '', tipoAplicacao = '') {
             const container = document.getElementById('medidasContainer');
-            const lastGroup = container.lastElementChild;
-
-            if (lastGroup && !isGroupPopulated(lastGroup)) {
-                alert('Preencha todos os campos do grupo de medidas atual antes de adicionar um novo.');
-                return;
-            }
-
             const medidaGroup = document.createElement('div');
             medidaGroup.classList.add('medida-group');
 
             medidaGroup.innerHTML = `
                 <div class="medida-row">
                     <input type="checkbox" ${isChecked ? 'checked' : ''} onchange="toggleInputs(this)">
-                    <input type="number" placeholder="Larg" value="${largura}" oninput="calculateTotal()">
-                    <input type="number" placeholder="Alt" value="${altura}" oninput="calculateTotal()">
-                    <input type="number" placeholder="Qtd" value="${quantidade}" oninput="calculateTotal()">
-                    <input type="number" placeholder="Tm²" disabled>
-                    <span class="toggle-icon" onclick="toggleAdditionalFields(this)">&#x25BC;</span>
+                    <input type="number" placeholder="L" value="${largura}" oninput="calculateTotal()">
+                    <input type="number" placeholder="A" value="${altura}" oninput="calculateTotal()">
+                    <input type="number" placeholder="Q" value="${quantidade}" oninput="calculateTotal()">
+                    <input type="number" placeholder="T" disabled>
+                    <button class="toggle-icon" onclick="toggleAdditionalFields(this)">▼</button>
+                    <button class="delete-button" onclick="deleteMedidaGroup(this)">×</button>
                 </div>
-                <div class="additional-fields hidden">
+                <div class="additional-fields">
                     <select onchange="calculateTotal()">
                         <option value="">Ambiente</option>
                         <option value="Sala de estar">Sala de estar</option>
-                        <option value="Sala de jantar">Sala de jantar</option>
+                        <option value="Quarto">Quarto</option>
                         <option value="Cozinha">Cozinha</option>
-                        <option value="Copa">Copa</option>
-                        <option value="Suite 1">Suite 1</option>
-                        <option value="Suite 2">Suite 2</option>
-                        <option value="Quarto 1">Quarto 1</option>
-                        <option value="Quarto 2">Quarto 2</option>
-                        <option value="Quarto 3">Quarto 3</option>
-                        <option value="Quarto 4">Quarto 4</option>
-                        <option value="Quarto empregada">Quarto empregada</option>
-                        <option value="Quarto principal">Quarto principal</option>
-                        <option value="Quarto de hóspedes">Quarto de hóspedes</option>
-                        <option value="Banheiro 1">Banheiro 1</option>
-                        <option value="Banheiro 2">Banheiro 2</option>
-                        <option value="Banheiro 3">Banheiro 3</option>
-                        <option value="Banheiro de hóspedes">Banheiro de hóspedes</option>
-                        <option value="Corredor">Corredor</option>
-                        <option value="Escada">Escada</option>
+                        <option value="Banheiro">Banheiro</option>
                         <option value="Escritório">Escritório</option>
-                        <option value="Lavanderia">Lavanderia</option>
-                        <option value="Garagem">Garagem</option>
-                        <option value="Varanda">Varanda</option>
-                        <option value="Jardim">Jardim</option>
-                        <option value="Sotão">Sotão</option>
-                        <option value="Porão">Porão</option>
-                        <option value="Outros">Outros</option>
                     </select>
                     <select onchange="calculateTotal()">
                         <option value="">Tipo de Aplicação</option>
-                        <option value="Janela Padrão">Janela Padrão</option>
-                        <option value="Janelão">Janelão</option>
+                        <option value="Janela">Janela</option>
                         <option value="Porta">Porta</option>
-                        <option value="Porta Balcão">Porta Balcão</option>
-                        <option value="Vitrine">Vitrine</option>
-                        <option value="Tampo de mesa">Tampo de mesa</option>
-                        <option value="Box de banheiro">Box de banheiro</option>
-                        <option value="Guarda-corpo">Guarda-corpo</option>
-                        <option value="Dispensa">Dispensa</option>
-                        <option value="Armário">Armário</option>
-                        <option value="Teto">Teto</option>
-                        <option value="Parede divisória">Parede divisória</option>
-                        <option value="Fachada">Fachada</option>
-                        <option value="Claraboia">Claraboia</option>
-                        <option value="Balcão">Balcão</option>
-                        <option value="Outras">Outras</option>
+                        <option value="Espelho">Espelho</option>
+                        <option value="Divisória">Divisória</option>
                     </select>
                 </div>
             `;
@@ -375,38 +346,34 @@
                 selects[1].value = tipoAplicacao;
             }
 
-            const inputs = medidaGroup.querySelectorAll('input[type="number"]');
-            if (inputs.length > 0) {
-                inputs[0].focus();
-                medidaGroup.scrollIntoView({ behavior: 'smooth' });
-            }
-
             calculateTotal();
         }
 
-        function isGroupPopulated(group) {
-            const inputs = group.querySelectorAll('input[type="number"]');
-            return Array.from(inputs).every(input => input.value.trim() !== '');
-        }
-
         function toggleInputs(checkbox) {
-            const inputs = checkbox.parentElement.querySelectorAll('input[type="number"], select');
+            const inputs = checkbox.closest('.medida-row').querySelectorAll('input[type="number"]');
             inputs.forEach(input => {
-                if (checkbox.checked) {
-                    input.disabled = false;
-                    input.classList.remove('disabled');
-                } else {
-                    input.disabled = true;
-                    input.classList.add('disabled');
-                }
+                input.disabled = !checkbox.checked;
             });
             calculateTotal();
         }
 
-        function toggleAdditionalFields(icon) {
-            const additionalFields = icon.parentElement.nextElementSibling;
-            additionalFields.classList.toggle('hidden');
-            icon.innerHTML = additionalFields.classList.contains('hidden') ? '&#x25BC;' : '&#x25B2;';
+        function toggleAdditionalFields(button) {
+            const fields = button.closest('.medida-group').querySelector('.additional-fields');
+            if (fields.style.display === 'none' || fields.style.display === '') {
+                fields.style.display = 'flex';
+                button.textContent = '▲';
+            } else {
+                fields.style.display = 'none';
+                button.textContent = '▼';
+            }
+        }
+
+        function deleteMedidaGroup(button) {
+            if (confirm('Tem certeza que deseja excluir este grupo de medidas?')) {
+                button.closest('.medida-group').remove();
+                calculateTotal();
+                saveMedidas();
+            }
         }
 
         function calculateTotal() {
@@ -415,27 +382,16 @@
 
             medidaGroups.forEach(group => {
                 const isChecked = group.querySelector('input[type="checkbox"]').checked;
-                const largura = parseFloat(group.querySelector('input[placeholder="Larg"]').value);
-                const altura = parseFloat(group.querySelector('input[placeholder="Alt"]').value);
-                const quantidade = parseInt(group.querySelector('input[placeholder="Qtd"]').value);
+                const largura = parseFloat(group.querySelector('input[placeholder="L"]').value) || 0;
+                const altura = parseFloat(group.querySelector('input[placeholder="A"]').value) || 0;
+                const quantidade = parseInt(group.querySelector('input[placeholder="Q"]').value) || 0;
 
-                if (isChecked && !isNaN(largura) && !isNaN(altura) && !isNaN(quantidade)) {
+                if (isChecked) {
                     const total = largura * altura * quantidade;
                     totalM2 += total;
-                    group.querySelector('input[placeholder="Tm²"]').value = total.toFixed(2);
-                    group.querySelector('input[placeholder="Larg"]').classList.remove('invalid');
-                    group.querySelector('input[placeholder="Alt"]').classList.remove('invalid');
-                    group.querySelector('input[placeholder="Qtd"]').classList.remove('invalid');
+                    group.querySelector('input[placeholder="T"]').value = total.toFixed(2);
                 } else {
-                    group.querySelector('input[placeholder="Tm²"]').value = 0;
-                    if (isNaN(largura)) group.querySelector('input[placeholder="Larg"]').classList.add('invalid');
-                    else group.querySelector('input[placeholder="Larg"]').classList.remove('invalid');
-
-                    if (isNaN(altura)) group.querySelector('input[placeholder="Alt"]').classList.add('invalid');
-                    else group.querySelector('input[placeholder="Alt"]').classList.remove('invalid');
-
-                    if (isNaN(quantidade)) group.querySelector('input[placeholder="Qtd"]').classList.add('invalid');
-                    else group.querySelector('input[placeholder="Qtd"]').classList.remove('invalid');
+                    group.querySelector('input[placeholder="T"]').value = '0.00';
                 }
             });
 
@@ -444,71 +400,62 @@
         }
 
         function saveMedidas() {
-            try {
-                const cliente = clienteSelect.value;
-                if (!cliente) {
-                    alert('Selecione um cliente.');
-                    return;
-                }
+            const cliente = clienteSelect.value;
+            if (!cliente) return;
 
-                const medidaGroups = document.querySelectorAll('.medida-group');
-                const medidas = Array.from(medidaGroups).map(group => {
-                    const isChecked = group.querySelector('input[type="checkbox"]').checked;
-                    const largura = group.querySelector('input[placeholder="Larg"]').value;
-                    const altura = group.querySelector('input[placeholder="Alt"]').value;
-                    const quantidade = group.querySelector('input[placeholder="Qtd"]').value;
-                    const ambiente = group.querySelector('.additional-fields select:nth-child(1)').value;
-                    const tipoAplicacao = group.querySelector('.additional-fields select:nth-child(2)').value;
-                    return { isChecked, largura, altura, quantidade, ambiente, tipoAplicacao };
-                });
-                localStorage.setItem(`medidas_${cliente}`, JSON.stringify(medidas));
-                console.log('Medidas salvas com sucesso.');
-            } catch (e) {
-                console.error('Erro ao salvar medidas:', e);
-            }
+            const medidaGroups = document.querySelectorAll('.medida-group');
+            const medidas = Array.from(medidaGroups).map(group => {
+                const isChecked = group.querySelector('input[type="checkbox"]').checked;
+                const largura = group.querySelector('input[placeholder="L"]').value;
+                const altura = group.querySelector('input[placeholder="A"]').value;
+                const quantidade = group.querySelector('input[placeholder="Q"]').value;
+                const ambiente = group.querySelector('select:first-of-type').value;
+                const tipoAplicacao = group.querySelector('select:last-of-type').value;
+                return { isChecked, largura, altura, quantidade, ambiente, tipoAplicacao };
+            });
+
+            localStorage.setItem(`medidas_${cliente}`, JSON.stringify(medidas));
         }
 
         function loadMedidas() {
-            try {
-                const cliente = clienteSelect.value;
-                const savedMedidas = localStorage.getItem(`medidas_${cliente}`);
-                const medidasContainer = document.getElementById('medidasContainer');
-                medidasContainer.innerHTML = '';
+            const cliente = clienteSelect.value;
+            const savedMedidas = localStorage.getItem(`medidas_${cliente}`);
+            const medidasContainer = document.getElementById('medidasContainer');
+            medidasContainer.innerHTML = '';
 
-                if (savedMedidas) {
-                    const medidas = JSON.parse(savedMedidas);
-                    medidas.forEach(medida => {
-                        addMedidaGroup(medida.largura, medida.altura, medida.quantidade, medida.isChecked, medida.ambiente, medida.tipoAplicacao);
-                    });
-                } else {
-                    addMedidaGroup();
-                }
-                calculateTotal();
-                console.log('Medidas carregadas com sucesso.');
-            } catch (e) {
-                console.error('Erro ao carregar medidas:', e);
+            if (savedMedidas) {
+        const medidas = JSON.parse(savedMedidas);
+        medidas.forEach(medida => {
+            addMedidaGroup(medida.largura, medida.altura, medida.quantidade, medida.isChecked, medida.ambiente, medida.tipoAplicacao);
+                });
+            } else {
+                addMedidaGroup();
             }
+            calculateTotal();
         }
 
         function clearMedidas() {
-            try {
-                const cliente = clienteSelect.value;
-                if (!cliente) {
-                    alert('Selecione um cliente.');
-                    return;
-                }
-                localStorage.removeItem(`medidas_${cliente}`);
-                document.getElementById('medidasContainer').innerHTML = '';
-                addMedidaGroup();
-                calculateTotal();
-                console.log('Medidas limpas com sucesso.');
-            } catch (e) {
-                console.error('Erro ao limpar medidas:', e);
+            const cliente = clienteSelect.value;
+            if (!cliente) {
+                alert('Selecione um cliente.');
+                return;
             }
+            
+            localStorage.removeItem(`medidas_${cliente}`);
+            const index = clientes.indexOf(cliente);
+            if (index > -1) {
+                clientes.splice(index, 1);
+                localStorage.setItem('clientes', JSON.stringify(clientes));
+            }
+            
+            carregarClientes();
+            document.getElementById('medidasContainer').innerHTML = '';
+            addMedidaGroup();
+            calculateTotal();
         }
 
         function confirmClearMedidas() {
-            if (confirm("Tem certeza que deseja iniciar um novo orçamento? Isso apagará todas as medidas atuais.")) {
+            if (confirm("Tem certeza que deseja apagar este cliente e suas medidas?")) {
                 clearMedidas();
             }
         }
@@ -545,7 +492,7 @@
 
             // Título Medidas
             doc.setFontSize(16);
-            doc.setFillColor(220, 220, 220); // Cor de fundo cinza
+            doc.setFillColor(220, 220, 220);
             doc.rect(margin, y, pageWidth - 2 * margin, 10, 'F');
             doc.setTextColor(0, 0, 0);
             doc.text('Medidas', margin + 2, y + 7);
@@ -553,128 +500,53 @@
 
             const medidaGroups = document.querySelectorAll('.medida-group');
 
-            for (let i = 0; i < medidaGroups.length; i += 2) {
-                const group1 = medidaGroups[i];
-                const group2 = medidaGroups[i + 1];
-
+            medidaGroups.forEach((group, index) => {
                 if (y + lineHeight * 6 > pageHeight) {
                     doc.addPage();
                     y = 40;
                     page += 1;
-
-                    doc.setFontSize(18);
-                    doc.setTextColor(0, 0, 0);
-                    doc.text(`Nome: ${cliente}`, margin, 20);
-
                     doc.setFontSize(12);
-                    doc.text(`Data: ${formattedDate}`, pageWidth - margin, 20, { align: 'right' });
-                    doc.text(`Hora: ${formattedTime}`, pageWidth - margin, 25, { align: 'right' });
-                    doc.text(`Página: ${page}`, pageWidth - margin, 30, { align: 'right' });
-
-                    doc.setFontSize(16);
-                    doc.setFillColor(220, 220, 220); // Cor de fundo cinza
-                    doc.rect(margin, y, pageWidth - 2 * margin, 10, 'F');
-                    doc.setTextColor(0, 0, 0);
-                    doc.text('Medidas', margin + 2, y + 7);
-                    y += 15;
+                    doc.text(`Página ${page}`, pageWidth - margin, 20, { align: 'right' });
                 }
 
-                const isChecked1 = group1.querySelector('input[type="checkbox"]').checked ? "Sim" : "Não";
-                const largura1 = group1.querySelector('input[placeholder="Larg"]').value;
-                const altura1 = group1.querySelector('input[placeholder="Alt"]').value;
-                const quantidade1 = group1.querySelector('input[placeholder="Qtd"]').value;
-                const totalM21 = group1.querySelector('input[placeholder="Tm²"]').value;
-                const ambiente1 = group1.querySelector('.additional-fields select:nth-child(1)').value;
-                const tipoAplicacao1 = group1.querySelector('.additional-fields select:nth-child(2)').value;
+                const isChecked = group.querySelector('input[type="checkbox"]').checked ? "Sim" : "Não";
+                const largura = group.querySelector('input[placeholder="L"]').value;
+                const altura = group.querySelector('input[placeholder="A"]').value;
+                const quantidade = group.querySelector('input[placeholder="Q"]').value;
+                const totalM2 = group.querySelector('input[placeholder="T"]').value;
+                const ambiente = group.querySelector('select:first-of-type').value;
+                const tipoAplicacao = group.querySelector('select:last-of-type').value;
 
-                const isChecked2 = group2 ? group2.querySelector('input[type="checkbox"]').checked ? "Sim" : "Não" : "";
-                const largura2 = group2 ? group2.querySelector('input[placeholder="Larg"]').value : "";
-                const altura2 = group2 ? group2.querySelector('input[placeholder="Alt"]').value : "";
-                const quantidade2 = group2 ? group2.querySelector('input[placeholder="Qtd"]').value : "";
-                const totalM22 = group2 ? group2.querySelector('input[placeholder="Tm²"]').value : "";
-                const ambiente2 = group2 ? group2.querySelector('.additional-fields select:nth-child(1)').value : "";
-                const tipoAplicacao2 = group2 ? group2.querySelector('.additional-fields select:nth-child(2)').value : "";
-
-                // Bloco de Medidas
                 doc.setFontSize(14);
-                doc.setFillColor(220, 220, 220); // Cor de fundo cinza
-                doc.rect(margin, y, (pageWidth - 3 * margin) / 2, 10, 'F');
-                doc.rect(margin + (pageWidth - 3 * margin) / 2 + margin, y, (pageWidth - 3 * margin) / 2, 10, 'F');
+                doc.setFillColor(240, 240, 240);
+                doc.rect(margin, y, pageWidth - 2 * margin, 7, 'F');
                 doc.setTextColor(0, 0, 0);
-                doc.text(`Medida ${i + 1}`, margin + 2, y + 7);
-                if (group2) {
-                    doc.text(`Medida ${i + 2}`, margin + (pageWidth - 3 * margin) / 2 + margin + 2, y + 7);
-                }
-                y += 15;
+                doc.text(`Medida ${index + 1}`, margin + 2, y + 5);
+                y += 10;
 
-                // Dados da Medida
                 doc.setFontSize(12);
-                doc.setTextColor(100, 100, 100); // Cinza
+                doc.setTextColor(60, 60, 60);
+                doc.text(`Largura: ${largura}`, margin + 5, y);
+                doc.text(`Altura: ${altura}`, margin + 50, y);
+                doc.text(`Quantidade: ${quantidade}`, margin + 95, y);
+                doc.text(`Total M²: ${totalM2}`, margin + 140, y);
+                y += 7;
+                doc.text(`Ambiente: ${ambiente}`, margin + 5, y);
+                doc.text(`Tipo de Aplicação: ${tipoAplicacao}`, margin + 95, y);
+                y += 7;
+                doc.text(`Incluído: ${isChecked}`, margin + 5, y);
+                y += 10;
+            });
 
-                let linhaY = y;
+            // Total geral
+            const totalGeral = document.getElementById('resultado').innerText;
+            doc.setFontSize(16);
+            doc.setTextColor(0, 100, 0);
+            doc.text(totalGeral, pageWidth - margin, y, { align: 'right' });
 
-                if (largura1) {
-                    doc.text(`Largura: ${largura1}`, margin + 2, linhaY);
-                    linhaY += 5;
-                }
-                if (altura1) {
-                    doc.text(`Altura: ${altura1}`, margin + 2, linhaY);
-                    linhaY += 5;
-                }
-                if (quantidade1) {
-                    doc.text(`Quantidade: ${quantidade1}`, margin + 2, linhaY);
-                    linhaY += 5;
-                }
-                if (totalM21) {
-                    doc.text(`Total M²: ${totalM21}`, margin + 2, linhaY);
-                    linhaY += 5;
-                }
-                if (ambiente1) {
-                    doc.text(`Ambiente: ${ambiente1}`, margin + 2, linhaY);
-                    linhaY += 5;
-                }
-                if (tipoAplicacao1) {
-                    doc.text(`Tipo de Aplicação: ${tipoAplicacao1}`, margin + 2, linhaY);
-                    linhaY += 5;
-                }
-                doc.text(`Incluído: ${isChecked1}`, margin + 2, linhaY);
-
-                if (group2) {
-                    linhaY = y;
-
-                    if (largura2) {
-                        doc.text(`Largura: ${largura2}`, margin + (pageWidth - 3 * margin) / 2 + margin + 2, linhaY);
-                        linhaY += 5;
-                    }
-                    if (altura2) {
-                        doc.text(`Altura: ${altura2}`, margin + (pageWidth - 3 * margin) / 2 + margin + 2, linhaY);
-                        linhaY += 5;
-                    }
-                    if (quantidade2) {
-                        doc.text(`Quantidade: ${quantidade2}`, margin + (pageWidth - 3 * margin) / 2 + margin + 2, linhaY);
-                        linhaY += 5;
-                    }
-                    if (totalM22) {
-                        doc.text(`Total M²: ${totalM22}`, margin + (pageWidth - 3 * margin) / 2 + margin + 2, linhaY);
-                        linhaY += 5;
-                    }
-                    if (ambiente2) {
-                        doc.text(`Ambiente: ${ambiente2}`, margin + (pageWidth - 3 * margin) / 2 + margin + 2, linhaY);
-                        linhaY += 5;
-                    }
-                    if (tipoAplicacao2) {
-                        doc.text(`Tipo de Aplicação: ${tipoAplicacao2}`, margin + (pageWidth - 3 * margin) / 2 + margin + 2, linhaY);
-                        linhaY += 5;
-                    }
-                    doc.text(`Incluído: ${isChecked2}`, margin + (pageWidth - 3 * margin) / 2 + margin + 2, linhaY);
-                }
-
-                y += 35;
-            }
-
-            // Paginação no rodapé
+            // Rodapé
             doc.setFontSize(10);
-            doc.setTextColor(100, 100, 100); // Cinza
+            doc.setTextColor(100, 100, 100);
             doc.text(`Página ${page}`, pageWidth / 2, pageHeight - 10, { align: 'center' });
 
             doc.save(`orcamento_medidas_${cliente}.pdf`);
@@ -682,10 +554,6 @@
 
         window.onload = () => {
             carregarClientes();
-            if (clientes.length > 0) {
-                clienteSelect.value = clientes[0];
-                loadMedidas();
-            }
         };
     </script>
 </body>
