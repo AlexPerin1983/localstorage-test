@@ -502,97 +502,133 @@
             }
         }
 
-        function generatePDF() {
-            const cliente = clienteSelect.value;
-            if (!cliente) {
-                alert('Selecione um cliente.');
-                return;
-            }
+        const generatePDF = () => {
+    const cliente = clienteSelect.value;
+    if (!cliente) {
+        alert('Selecione um cliente.');
+        return;
+    }
 
-            const { jsPDF } = window.jspdf;
-            const doc = new jsPDF('p', 'mm', 'a4');
-            const pageHeight = doc.internal.pageSize.height;
-            const pageWidth = doc.internal.pageSize.width;
-            const margin = 20;
-            const lineHeight = 10;
-            let y = 40;
-            let page = 1;
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF('p', 'mm', 'a4');
+    const pageWidth = doc.internal.pageSize.width;
+    const pageHeight = doc.internal.pageSize.height;
+    const margin = 15;
+    let y = margin;
 
-            const date = new Date();
-            const formattedDate = date.toLocaleDateString();
-            const formattedTime = date.toLocaleTimeString();
+    // Funções auxiliares
+    const addPage = () => {
+        doc.addPage();
+        y = margin;
+        addHeader();
+        addFooter();
+    };
 
-            // Cabeçalho
-            doc.setFontSize(18);
-            doc.setTextColor(0, 0, 0);
-            doc.text(`Nome: ${cliente}`, margin, 20);
+    const addHeader = () => {
+        const date = new Date().toLocaleDateString();
+        const time = new Date().toLocaleTimeString();
+        
+        doc.setFillColor(41, 128, 185); // Azul corporativo
+        doc.rect(0, 0, pageWidth, 40, 'F');
+        
+        doc.setTextColor(255);
+        doc.setFont("helvetica", "bold");
+        doc.setFontSize(24);
+        doc.text("Orçamento de Medidas", margin, 25);
+        
+        doc.setFont("helvetica", "normal");
+        doc.setFontSize(10);
+        doc.text(`Data: ${date} | Hora: ${time}`, pageWidth - margin, 15, { align: 'right' });
+        doc.text(`Cliente: ${cliente}`, pageWidth - margin, 25, { align: 'right' });
 
-            doc.setFontSize(12);
-            doc.text(`Data: ${formattedDate}`, pageWidth - margin, 20, { align: 'right' });
-            doc.text(`Hora: ${formattedTime}`, pageWidth - margin, 25, { align: 'right' });
-            doc.text(`Página: ${page}`, pageWidth - margin, 30, { align: 'right' });
+        y = 50; // Posição após o cabeçalho
+    };
 
-            // Título Medidas
-            doc.setFontSize(16);
-            doc.setFillColor(220, 220, 220);
-            doc.rect(margin, y, pageWidth - 2 * margin, 10, 'F');
-            doc.setTextColor(0, 0, 0);
-            doc.text('Medidas', margin + 2, y + 7);
-            y += 15;
+    const addFooter = () => {
+        const pageNumber = doc.internal.getNumberOfPages();
+        doc.setFillColor(41, 128, 185);
+        doc.rect(0, pageHeight - 20, pageWidth, 20, 'F');
+        doc.setTextColor(255);
+        doc.setFont("helvetica", "normal");
+        doc.setFontSize(10);
+        doc.text(`Página ${pageNumber}`, pageWidth / 2, pageHeight - 10, { align: 'center' });
+    };
 
-            const medidaGroups = document.querySelectorAll('.medida-group');
+    const addSectionTitle = (title) => {
+        if (y > pageHeight - 60) addPage();
+        doc.setFillColor(236, 240, 241); // Cinza claro
+        doc.rect(margin, y, pageWidth - 2 * margin, 10, 'F');
+        doc.setTextColor(52, 73, 94); // Azul escuro
+        doc.setFont("helvetica", "bold");
+        doc.setFontSize(14);
+        doc.text(title, margin + 5, y + 7);
+        y += 15;
+    };
 
-            medidaGroups.forEach((group, index) => {
-                if (y + lineHeight * 6 > pageHeight) {
-                    doc.addPage();
-                    y = 40;
-                    page += 1;
-                    doc.setFontSize(12);
-                    doc.text(`Página ${page}`, pageWidth - margin, 20, { align: 'right' });
-                }
+    const addMedidaItem = (medida, index) => {
+        if (y > pageHeight - 80) addPage();
 
-                const isChecked = group.querySelector('input[type="checkbox"]').checked ? "Sim" : "Não";
-                const largura = group.querySelector('input[placeholder="L"]').value;
-                const altura = group.querySelector('input[placeholder="A"]').value;
-                const quantidade = group.querySelector('input[placeholder="Q"]').value;
-                const totalM2 = group.querySelector('input[placeholder="T"]').value;
-                const ambiente = group.querySelector('select:first-of-type').value;
-                const tipoAplicacao = group.querySelector('select:last-of-type').value;
+        const isChecked = medida.querySelector('input[type="checkbox"]').checked;
+        const largura = medida.querySelector('input[placeholder="L"]').value;
+        const altura = medida.querySelector('input[placeholder="A"]').value;
+        const quantidade = medida.querySelector('input[placeholder="Q"]').value;
+        const totalM2 = medida.querySelector('input[placeholder="T"]').value;
+        const ambiente = medida.querySelector('select:first-of-type').value;
+        const tipoAplicacao = medida.querySelector('select:last-of-type').value;
 
-                doc.setFontSize(14);
-                doc.setFillColor(240, 240, 240);
-                doc.rect(margin, y, pageWidth - 2 * margin, 7, 'F');
-                doc.setTextColor(0, 0, 0);
-                doc.text(`Medida ${index + 1}`, margin + 2, y + 5);
-                y += 10;
+        doc.setFillColor(236, 240, 241);
+        doc.roundedRect(margin, y, pageWidth - 2 * margin, 30, 3, 3, 'F');
 
-                doc.setFontSize(12);
-                doc.setTextColor(60, 60, 60);
-                doc.text(`Largura: ${largura}`, margin + 5, y);
-                doc.text(`Altura: ${altura}`, margin + 50, y);
-                doc.text(`Quantidade: ${quantidade}`, margin + 95, y);
-                doc.text(`Total M²: ${totalM2}`, margin + 140, y);
-                y += 7;
-                doc.text(`Ambiente: ${ambiente}`, margin + 5, y);
-                doc.text(`Tipo de Aplicação: ${tipoAplicacao}`, margin + 95, y);
-                y += 7;
-                doc.text(`Incluído: ${isChecked}`, margin + 5, y);
-                y += 10;
-            });
+        doc.setTextColor(52, 73, 94);
+        doc.setFont("helvetica", "bold");
+        doc.setFontSize(12);
+        doc.text(`Medida ${index + 1}`, margin + 5, y + 6);
 
-            // Total geral
-            const totalGeral = document.getElementById('resultado').innerText;
-            doc.setFontSize(16);
-            doc.setTextColor(0, 100, 0);
-            doc.text(totalGeral, pageWidth - margin, y, { align: 'right' });
+        doc.setFont("helvetica", "normal");
+        doc.setFontSize(10);
+        doc.text(`L: ${largura} | A: ${altura} | Q: ${quantidade} | Total: ${totalM2} m²`, margin + 5, y + 16);
+        doc.text(`Ambiente: ${ambiente}`, margin + 5, y + 26);
+        doc.text(`Tipo: ${tipoAplicacao}`, pageWidth / 2, y + 26);
 
-            // Rodapé
-            doc.setFontSize(10);
-            doc.setTextColor(100, 100, 100);
-            doc.text(`Página ${page}`, pageWidth / 2, pageHeight - 10, { align: 'center' });
-
-            doc.save(`orcamento_medidas_${cliente}.pdf`);
+        // Ícone de verificação
+        if (isChecked) {
+            doc.setFillColor(39, 174, 96);
+            doc.circle(pageWidth - margin - 10, y + 15, 5, 'F');
+            doc.setTextColor(255);
+            doc.text("✓", pageWidth - margin - 12, y + 17);
         }
+
+        y += 35;
+    };
+
+    // Gerar PDF
+    addHeader();
+    addFooter();
+
+    addSectionTitle("Detalhes das Medidas");
+
+    const medidaGroups = document.querySelectorAll('.medida-group');
+    medidaGroups.forEach((group, index) => {
+        addMedidaItem(group, index);
+    });
+
+    addSectionTitle("Resumo");
+    const totalGeral = document.getElementById('resultado').innerText;
+    doc.setFont("helvetica", "bold");
+    doc.setFontSize(16);
+    doc.setTextColor(41, 128, 185);
+    doc.text(totalGeral, pageWidth - margin, y, { align: 'right' });
+
+    // Adicionar marca d'água
+    doc.setTextColor(220, 220, 220);
+    doc.setFontSize(60);
+    doc.text("ORÇAMENTO", pageWidth / 2, pageHeight / 2, {
+        align: 'center',
+        angle: 45
+    });
+
+    doc.save(`orcamento_${cliente.replace(/\s+/g, '_').toLowerCase()}.pdf`);
+};
 
         window.onload = () => {
             carregarClientes();
