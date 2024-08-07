@@ -313,16 +313,17 @@
 
     <script>
         const peliculas = [
-            { nome: "Reflecta 15", infravermelho: 90, ultravioleta: 99, vlt: 20, preco: 100 },
-            { nome: "Window BLUE", infravermelho: 90, ultravioleta: 99, vlt: 75, preco: 100 },
-            { nome: "Color Stable", infravermelho: 80, ultravioleta: 99, vlt: 5, preco: 100 },
-            { nome: "Silver 10 Externa", infravermelho: 95, ultravioleta: 99, vlt: 10, preco: 130 },
-            { nome: "Prata Reflecta", infravermelho: 95, ultravioleta: 99, vlt: 5, preco: 130 },
-            { nome: "Prata Reflecta 15", infravermelho: 90, ultravioleta: 99, vlt: 20, preco: 130 },
+            { nome: "Reflecta 15", infravermelho: 90, ultravioleta: 99, vlt: 20, preco: 120 },
+            { nome: "Window BLUE", infravermelho: 90, ultravioleta: 99, vlt: 75, preco: 220 },
+            { nome: "Carbono Window Usa", infravermelho: 80, ultravioleta: 99, vlt: 5, preco: 100 },
+            { nome: "Silver 10 Externa", infravermelho: 95, ultravioleta: 99, vlt: 10, preco: 280 },
+            { nome: "Prata Reflecta", infravermelho: 95, ultravioleta: 99, vlt: 5, preco: 120 },
+            { nome: "Prata Reflecta 15", infravermelho: 90, ultravioleta: 99, vlt: 20, preco: 120 },
             { nome: "Origin Carbon", infravermelho: 90, ultravioleta: 99, vlt: 5, preco: 150 },
-            { nome: "Vinil Blackout", infravermelho: 80, ultravioleta: 99, vlt: 0, preco: 150 },
-            { nome: "Vinil Jateado", infravermelho: 28, ultravioleta: 99, vlt: 10, preco: 150 },
-            { nome: "Window Usa Carbono", infravermelho: 90, ultravioleta: 99, vlt: 5, preco: 150 }
+            { nome: "Vinil Blackout", infravermelho: 80, ultravioleta: 99, vlt: 0, preco: 130 },
+            { nome: "Vinil Jateado", infravermelho: 28, ultravioleta: 99, vlt: 10, preco: 120 },
+            { nome: "Vinil Perfurado", infravermelho: 18, ultravioleta: 50, vlt: 70, preco: 85 },
+            { nome: "Window Premium", infravermelho: 90, ultravioleta: 99, vlt: 5, preco: 160 }
         ];
 
         let clientes = JSON.parse(localStorage.getItem('clientes')) || [];
@@ -422,13 +423,68 @@
                     <button class="delete-button" onclick="deleteMedidaGroup(this)">×</button>
                 </div>
                 <div class="additional-fields">
-                    <select onchange="calculateTotal()">
-                        <option value="">Ambiente</option>
-                        <!-- Opções de ambiente aqui -->
+            <select onchange="calculateTotal()">
+                <option value="">Ambiente</option>
+                        <option value="Sala de estar">Sala de estar</option>
+                        <option value="Sala de jantar">Sala de jantar</option>
+                        <option value="Cozinha">Cozinha</option>
+                        <option value="Copa">Copa</option>
+                        <option value="Suite 1">Suite 1</option>
+                        <option value="Suite 2">Suite 2</option>
+                        <option value="Escritorio 1">Escritorio 1</option>
+                        <option value="Escritorio 2">Escritorio 2</option>
+                        <option value="Escritorio 3">Escritorio 3</option>
+                        <option value="Sala de Espera">Sala de Espera</option>
+                        <option value="Recepção">Recepção</option>
+                        <option value="Garita">Guarita</option>
+                        <option value="Portaria">Portaria</option>
+                        <option value="Refeitorio">Refeitorio</option>
+                        <option value="Refeitorio">Refeitorio</option>
+                        <option value="Quarto 1">Quarto 1</option>
+                        <option value="Quarto 2">Quarto 2</option>
+                        <option value="Quarto 3">Quarto 3</option>
+                        <option value="Quarto 4">Quarto 4</option>
+                        <option value="Quarto empregada">Quarto empregada</option>
+                        <option value="Quarto principal">Quarto principal</option>
+                        <option value="Quarto de hóspedes">Quarto de hóspedes</option>
+                        <option value="Banheiro 1">Banheiro 1</option>
+                        <option value="Banheiro 2">Banheiro 2</option>
+                        <option value="Banheiro 3">Banheiro 3</option>
+                        <option value="Banheiro de hóspedes">Banheiro de hóspedes</option>
+                        <option value="Corredor">Corredor</option>
+                        <option value="Escada">Escada</option>
+                        <option value="Escritório">Escritório</option>
+                        <option value="Lavanderia">Lavanderia</option>
+                        <option value="Garagem">Garagem</option>
+                        <option value="Varanda">Varanda</option>
+                        <option value="Jardim">Jardim</option>
+                        <option value="Sotão">Sotão</option>
+                        <option value="Porão">Porão</option>
+                        <option value="Elevador">Elevador</option>
+                        <option value="Outros">Outros</option>
                     </select>
                     <select onchange="calculateTotal()">
-                        <option value="">Tipo de Aplicação</option>
-                        <!-- Opções de tipo de aplicação aqui -->
+                         <option value="">Tipo de Aplicação</option>
+                        <option value="Vidro Fixo">Vidro Fixo</option>
+                        <option value="Janela Padrão">Janela Padrão</option>
+                        <option value="Janelão">Janelão</option>
+                        <option value="Janela de correr">Janela de correr</option>
+                        <option value="Janela pivotante">Janela pivotante</option>
+                        <option value="Basculante">Basculante</option>
+                        <option value="Porta">Porta</option>
+                        <option value="Porta Balcão">Porta Balcão</option>
+                        <option value="Vitrine">Vitrine</option>
+                        <option value="Tampo de mesa">Tampo de mesa</option>
+                        <option value="Box de banheiro">Box de banheiro</option>
+                        <option value="Guarda-corpo">Guarda-corpo</option>
+                        <option value="Dispensa">Dispensa</option>
+                        <option value="Armário">Armário</option>
+                        <option value="Teto">Teto</option>
+                        <option value="Parede divisória">Parede divisória</option>
+                        <option value="Fachada">Fachada</option>
+                        <option value="Claraboia">Claraboia</option>
+                        <option value="Balcão">Balcão</option>
+                        <option value="Outras">Outras</option>
                     </select>
                 </div>
             `;
