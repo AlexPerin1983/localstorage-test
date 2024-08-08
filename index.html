@@ -97,7 +97,6 @@
             align-items: center;
             justify-content: space-between;
             gap: 5px;
-            margin-bottom: 10px;
             flex-wrap: wrap; /* Allow items to wrap to the next line */
         }
 
@@ -237,13 +236,20 @@
         }
 
         /* Estilo para o dropdown de películas */
+        .pelicula-select-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 5px;
+            margin-top: 10px;
+        }
+
         .pelicula-select {
-            flex: 1 1 100%; /* Make it take the full width */
+            flex: 1;
             padding: 8px;
             font-size: 14px;
             border: 1px solid #ddd;
             border-radius: 5px;
-            margin-top: 5px; /* Add some spacing to the top */
         }
 
         /* Estilos para dispositivos móveis */
@@ -539,14 +545,16 @@
                     <input type="number" inputmode="decimal" placeholder="A" value="${altura}" class="altura-input" oninput="calculateTotal()">
                     <input type="number" inputmode="numeric" placeholder="Q" value="${quantidade}" class="quantidade-input" oninput="calculateTotal()">
                     <input type="number" placeholder="T" disabled>
+                </div>
+                <div class="pelicula-select-row">
+                    <select class="pelicula-select" onchange="calculateTotal()">
+                        <option value="">Película</option>
+                        ${peliculas.map(p => `<option value="${p.nome}" ${p.nome === peliculaSelecionada ? 'selected' : ''}>${p.nome}</option>`).join('')}
+                    </select>
                     <button class="toggle-icon" onclick="toggleAdditionalFields(this)">▼</button>
                     <button class="delete-button" onclick="deleteMedidaGroup(this)">×</button>
                     <button class="duplicate-button" onclick="duplicarGrupo(this)">⎘</button>
                 </div>
-                <select class="pelicula-select" onchange="calculateTotal()">
-                    <option value="">Película</option>
-                    ${peliculas.map(p => `<option value="${p.nome}" ${p.nome === peliculaSelecionada ? 'selected' : ''}>${p.nome}</option>`).join('')}
-                </select>
                 <div class="additional-fields">
                     <select onchange="calculateTotal()">
                         <option value="">Ambiente</option>
@@ -1055,12 +1063,6 @@
                 alert("Ocorreu um erro ao gerar o PDF. Por favor, verifique o console para mais detalhes.");
             }
         }
-
-        // Atualizar o event listener para usar a nova versão
-        document.addEventListener('DOMContentLoaded', () => {
-            carregarClientes();
-            document.getElementById('generatePdfButton').addEventListener('click', generatePDF_v7_10);
-        });
     </script>
 </body>
 </html>
