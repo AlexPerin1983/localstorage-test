@@ -7,8 +7,6 @@
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&family=Montserrat:wght@700&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script>
     <style>
-        /* Seus estilos CSS existentes aqui */
-        /* ... */
         /* Importação de fonte */
         @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&family=Montserrat:wght@600;700&display=swap');
 
@@ -100,6 +98,7 @@
             justify-content: space-between;
             gap: 5px;
             margin-bottom: 10px;
+            flex-wrap: wrap; /* Allow items to wrap to the next line */
         }
 
         /* Estilos dos inputs numéricos */
@@ -239,11 +238,12 @@
 
         /* Estilo para o dropdown de películas */
         .pelicula-select {
-            flex: 1.5;
+            flex: 1 1 100%; /* Make it take the full width */
             padding: 8px;
             font-size: 14px;
             border: 1px solid #ddd;
             border-radius: 5px;
+            margin-top: 5px; /* Add some spacing to the top */
         }
 
         /* Estilos para dispositivos móveis */
@@ -258,7 +258,7 @@
             }
 
             .medida-row {
-                flex-wrap: nowrap;
+                flex-wrap: wrap;
             }
 
             .medida-group input[type="checkbox"] {
@@ -539,14 +539,14 @@
                     <input type="number" inputmode="decimal" placeholder="A" value="${altura}" class="altura-input" oninput="calculateTotal()">
                     <input type="number" inputmode="numeric" placeholder="Q" value="${quantidade}" class="quantidade-input" oninput="calculateTotal()">
                     <input type="number" placeholder="T" disabled>
-                    <select class="pelicula-select" onchange="calculateTotal()">
-                        <option value="">Película</option>
-                        ${peliculas.map(p => `<option value="${p.nome}" ${p.nome === peliculaSelecionada ? 'selected' : ''}>${p.nome}</option>`).join('')}
-                    </select>
                     <button class="toggle-icon" onclick="toggleAdditionalFields(this)">▼</button>
                     <button class="delete-button" onclick="deleteMedidaGroup(this)">×</button>
                     <button class="duplicate-button" onclick="duplicarGrupo(this)">⎘</button>
                 </div>
+                <select class="pelicula-select" onchange="calculateTotal()">
+                    <option value="">Película</option>
+                    ${peliculas.map(p => `<option value="${p.nome}" ${p.nome === peliculaSelecionada ? 'selected' : ''}>${p.nome}</option>`).join('')}
+                </select>
                 <div class="additional-fields">
                     <select onchange="calculateTotal()">
                         <option value="">Ambiente</option>
@@ -1061,7 +1061,6 @@
             carregarClientes();
             document.getElementById('generatePdfButton').addEventListener('click', generatePDF_v7_10);
         });
-
     </script>
 </body>
 </html>
